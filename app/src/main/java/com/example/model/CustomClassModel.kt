@@ -3,21 +3,67 @@ package com.example.model
 data class CustomTypographyClass(
     val id: String,
     val name: String,
-    val className: String, // e.g. "my-author-badge"
+    val className: String,
     val description: String,
-    val cssRules: String, // e.g. "background: #fff3e0; border-left: 4px solid #ff9800; padding: 12px; border-radius: 6px;"
-    val htmlTemplate: String // e.g. "<div class=\"my-author-badge\"><p>{{text}}</p></div>"
+    val cssRules: String,
+    val htmlTemplate: String,
+    val category: String = "Plus UI 3.7.0"
 )
 
 object CustomClassPresets {
     val INITIAL_CUSTOM_CLASSES = listOf(
         CustomTypographyClass(
-            id = "custom_author_sig",
-            name = "Author Signature Box",
-            className = "custom-author-box",
-            description = "Elegantly framed author profile card with gold border and bio text",
+            id = "custom_video_featured",
+            name = "Featured Video Hero Card",
+            className = "video-hero-card",
+            category = "Images and Video",
+            description = "Responsive featured video player card with dark bezel and caption",
             cssRules = """
-.custom-author-box {
+.video-hero-card {
+    background: #0f172a;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 24px 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.video-hero-card .videoYt {
+    border-radius: 8px;
+    overflow: hidden;
+}
+.video-hero-card .caption {
+    color: #94a3b8;
+    font-size: 0.88rem;
+    margin-top: 10px;
+    text-align: center;
+}
+            """.trimIndent(),
+            htmlTemplate = """<div class="video-hero-card"><div class="videoYt"><iframe src="https://www.youtube.com/embed/{{videoId}}" allowfullscreen></iframe></div><div class="caption">{{caption}}</div></div>"""
+        ),
+        CustomTypographyClass(
+            id = "custom_download_safelink",
+            name = "Safelink Download Showcase",
+            className = "dl-safelink-card",
+            category = "Download Box",
+            description = "Download box with instant Safelink countdown integration",
+            cssRules = """
+.dl-safelink-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 18px;
+    margin: 20px 0;
+}
+            """.trimIndent(),
+            htmlTemplate = """<div class="dlBox"><div class="fT" data-text="{{type}}"></div><div class="fN"><span>{{filename}}</span><span class="fS">{{size}}</span></div><a class="button safeL" href="{{url}}" aria-label="Download"><i class="icon dl"></i></a></div>"""
+        ),
+        CustomTypographyClass(
+            id = "custom_author_sig",
+            name = "Author Bio & Signature",
+            className = "author-signature-box",
+            category = "Text and Layout",
+            description = "Elegantly framed author profile card with bio text",
+            cssRules = """
+.author-signature-box {
     background: #fdfaf3;
     border: 1.5px solid #d4af37;
     border-radius: 10px;
@@ -27,21 +73,22 @@ object CustomClassPresets {
     align-items: center;
     gap: 14px;
 }
-.custom-author-box .author-bio {
+.author-signature-box .bio {
     font-size: 0.95rem;
     color: #4a5568;
     line-height: 1.6;
 }
             """.trimIndent(),
-            htmlTemplate = """<div class="custom-author-box"><div class="author-bio"><strong>Written by Editor:</strong> {{text}}</div></div>"""
+            htmlTemplate = """<div class="author-signature-box"><div class="bio"><strong>Author:</strong> {{text}}</div></div>"""
         ),
         CustomTypographyClass(
             id = "custom_affiliate_notice",
-            name = "Affiliate / Disclaimer Callout",
-            className = "custom-disclaimer",
-            description = "Soft amber disclosure note compliant with Google AdSense & FTC",
+            name = "Disclaimer Callout",
+            className = "post-disclaimer-note",
+            category = "Alerts and Notes",
+            description = "Soft amber disclosure note compliant with AdSense & FTC",
             cssRules = """
-.custom-disclaimer {
+.post-disclaimer-note {
     background: #fff8e1;
     border-left: 4px solid #ffa000;
     color: #5d4037;
@@ -52,70 +99,18 @@ object CustomClassPresets {
     font-style: italic;
 }
             """.trimIndent(),
-            htmlTemplate = """<div class="custom-disclaimer">ℹ️ <strong>Disclaimer:</strong> {{text}}</div>"""
-        ),
-        CustomTypographyClass(
-            id = "custom_download_cta",
-            name = "Gradient Download Box",
-            className = "custom-download-card",
-            description = "High-CTR gradient container with download action button",
-            cssRules = """
-.custom-download-card {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    color: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    margin: 24px 0;
-    text-align: center;
-    border: 1px solid #334155;
-}
-.custom-download-card h4 {
-    color: #f1c40f;
-    margin: 0 0 8px 0;
-    font-size: 1.2rem;
-}
-.custom-download-card p {
-    color: #cbd5e1;
-    font-size: 0.9rem;
-    margin-bottom: 14px;
-}
-            """.trimIndent(),
-            htmlTemplate = """<div class="custom-download-card"><h4>{{title}}</h4><p>{{text}}</p><a href="#" class="oh-btn oh-btn-download">Download Resource Now</a></div>"""
-        ),
-        CustomTypographyClass(
-            id = "custom_promo_banner",
-            name = "OsunHive Featured Promo",
-            className = "custom-promo-banner",
-            description = "OsunHive community promo banner driving visits to osunhive.name.ng",
-            cssRules = """
-.custom-promo-banner {
-    background: #111827;
-    border: 2px solid #d4af37;
-    border-radius: 10px;
-    padding: 16px;
-    margin: 20px 0;
-    color: #f9fafb;
-    text-align: center;
-}
-.custom-promo-banner a {
-    color: #f1c40f;
-    font-weight: bold;
-    text-decoration: underline;
-}
-            """.trimIndent(),
-            htmlTemplate = """<div class="custom-promo-banner"><strong>🚀 Powered by OsunHive UI:</strong> Discover free templates & tools at <a href="https://www.osunhive.name.ng" target="_blank" rel="noopener">osunhive.name.ng</a> or join <a href="https://t.me/Osunhive" target="_blank" rel="noopener">t.me/Osunhive</a></div>"""
+            htmlTemplate = """<div class="post-disclaimer-note">ℹ️ <strong>Disclaimer:</strong> {{text}}</div>"""
         )
     )
 
     fun generateFullCombinedCss(customClasses: List<CustomTypographyClass>): String {
         return buildString {
-            append(OsunhiveUiTypography.FULL_CSS_STYLESHEET)
-            append("\n\n<style id=\"custom-user-typography-classes\">\n")
+            append("<style id=\"plus-ui-custom-classes\">\n")
             append("/* ==========================================================================\n")
-            append("   User Custom Typography Classes for Blogger / Blogspot Posts\n")
+            append("   Plus UI 3.7.0 Extended Post Formatting Classes for Blogger\n")
             append("   ========================================================================== */\n\n")
             customClasses.forEach { cls ->
-                append("/* Class: ${cls.name} (.${cls.className}) */\n")
+                append("/* Class: ${cls.name} (.${cls.className}) - Category: ${cls.category} */\n")
                 append(cls.cssRules)
                 append("\n\n")
             }

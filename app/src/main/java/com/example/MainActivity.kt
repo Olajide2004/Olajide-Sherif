@@ -67,16 +67,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.components.AutoTypeControlBar
 import com.example.ui.components.BatchCopyDialog
+import com.example.ui.components.BloggerMonetizationHubDialog
 import com.example.ui.components.BloggerWebViewPane
 import com.example.ui.components.ChromeBookmarkletDialog
 import com.example.ui.components.CustomClassManagerDialog
 import com.example.ui.components.DocumentToHtmlDialog
 import com.example.ui.components.EditorView
+import com.example.ui.components.FileAutoTypeBatchPasteDialog
 import com.example.ui.components.KeyboardSetupBanner
 import com.example.ui.components.KeyboardSetupDialog
-import com.example.ui.components.KeywordInjectorDialog
-import com.example.ui.components.OsunhiveMonetizationHubDialog
-import com.example.ui.components.OsunhiveUiTypographyDialog
+import com.example.ui.components.PlusUiTypographyDialog
 import com.example.ui.components.TemplatesAndFilesDialog
 import com.example.ui.components.TypewriterKeyboard
 import com.example.ui.theme.MyApplicationTheme
@@ -152,8 +152,8 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
 
     // Dialog visibility states
     var showTemplatesDialog by remember { mutableStateOf(false) }
-    var showKeywordsDialog by remember { mutableStateOf(false) }
-    var showOsunhiveUiDialog by remember { mutableStateOf(false) }
+    var showFileAutoTypeBatchDialog by remember { mutableStateOf(false) }
+    var showPlusUiDialog by remember { mutableStateOf(false) }
     var showBatchCopyDialog by remember { mutableStateOf(false) }
     var showChromeBookmarkletDialog by remember { mutableStateOf(false) }
     var showKeyboardSetupDialog by remember { mutableStateOf(false) }
@@ -207,7 +207,7 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
                                 )
                             )
                             Text(
-                                text = if (appMode == AppMode.BLOGGER_LIVE) "draft.blogger.com Direct Injection" else "Keyword & HTML Post Workbench",
+                                text = if (appMode == AppMode.BLOGGER_LIVE) "draft.blogger.com Direct Injection" else "Plus UI 3.7.0 Code Workbench",
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     fontSize = 10.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -218,10 +218,16 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
                 },
                 actions = {
                     IconButton(
-                        onClick = { showCustomClassDialog = true },
-                        modifier = Modifier.testTag("action_custom_classes")
+                        onClick = { showFileAutoTypeBatchDialog = true },
+                        modifier = Modifier.testTag("action_file_autotype_batch")
                     ) {
-                        Icon(Icons.Default.FormatPaint, contentDescription = "Custom Typography Classes", tint = SignalGold)
+                        Icon(Icons.Default.FileOpen, contentDescription = "File Auto-Typing & Batch Paste", tint = SignalGold)
+                    }
+                    IconButton(
+                        onClick = { showPlusUiDialog = true },
+                        modifier = Modifier.testTag("action_plus_ui_shortcodes")
+                    ) {
+                        Icon(Icons.Default.FormatPaint, contentDescription = "Plus UI 3.7.0 Shortcodes", tint = SignalGold)
                     }
                     IconButton(
                         onClick = { showDocFormatterDialog = true },
@@ -251,13 +257,7 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
                         onClick = { showTemplatesDialog = true },
                         modifier = Modifier.testTag("action_load_file")
                     ) {
-                        Icon(Icons.Default.FileOpen, contentDescription = "Load File or Template")
-                    }
-                    IconButton(
-                        onClick = { showKeywordsDialog = true },
-                        modifier = Modifier.testTag("action_keywords")
-                    ) {
-                        Icon(Icons.Default.Tag, contentDescription = "Inject Keywords")
+                        Icon(Icons.Default.Description, contentDescription = "Load Template")
                     }
                     IconButton(
                         onClick = { showBatchCopyDialog = true },
@@ -368,11 +368,12 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
                     canRedo = canRedo,
                     onUndo = { viewModel.undo() },
                     onRedo = { viewModel.redo() },
-                    onInjectKeywordsClick = { showKeywordsDialog = true },
+                    onInjectKeywordsClick = { showFileAutoTypeBatchDialog = true },
+                    onOpenFileAutoTypeAndBatchPaste = { showFileAutoTypeBatchDialog = true },
                     onClearClick = { viewModel.clearEditor() },
                     onCopyAllClick = { viewModel.copyToClipboard(editorValue.text) },
                     loadedFileInfo = loadedFileInfo,
-                    onOpenOsunhiveUi = { showOsunhiveUiDialog = true },
+                    onOpenOsunhiveUi = { showPlusUiDialog = true },
                     customClasses = customClasses,
                     onApplyAutoComplete = { viewModel.applyAutoCompleteSuggestion(it) },
                     onApplyFormattingTag = { tag, attr -> viewModel.applyFormattingTag(tag, attr) },
@@ -451,12 +452,22 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
     }
 
     // Modal Dialogs
-    if (showKeywordsDialog) {
-        KeywordInjectorDialog(
-            onDismiss = { showKeywordsDialog = false },
-            onInjectKeywords = { keywords, mode ->
-                viewModel.injectKeywords(keywords, mode)
-            }
+    if (showFileAutoTypeBatchDialog) {
+        FileAutoTypeBatchPasteDialog(
+            currentEditorText = editorValue.text,
+            onDismiss = { showFileAutoTypeBatchDialog = false },
+            onStartAutoType = { text, cfg ->
+                viewModel.startAutoTypeCustomText(text, cfg)
+                showFileAutoTypeBatchDialog = false
+            },
+            onBatchPasteToEditor = { chunk ->
+                viewModel.insertHtmlAtCaret(chunk)
+            },
+            autoTypeState = autoTypeState,
+            autoTypeProgress = progressFraction,
+            onPauseAutoType = { viewModel.pauseAutoType() },
+            onResumeAutoType = { viewModel.resumeAutoType() },
+            onStopAutoType = { viewModel.stopAutoType() }
         )
     }
 
@@ -509,16 +520,16 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
         )
     }
 
-    if (showOsunhiveUiDialog) {
-        OsunhiveUiTypographyDialog(
-            onDismiss = { showOsunhiveUiDialog = false },
+    if (showPlusUiDialog) {
+        PlusUiTypographyDialog(
+            onDismiss = { showPlusUiDialog = false },
             onInsertSnippet = { snippet ->
                 viewModel.typeText(snippet)
-                showOsunhiveUiDialog = false
+                showPlusUiDialog = false
             },
             onAutoTypeSnippet = { snippet ->
                 viewModel.autoTypeSnippet(snippet)
-                showOsunhiveUiDialog = false
+                showPlusUiDialog = false
             }
         )
     }
@@ -570,14 +581,14 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
     }
 
     if (showMonetizationDialog) {
-        OsunhiveMonetizationHubDialog(
+        BloggerMonetizationHubDialog(
             onDismiss = { showMonetizationDialog = false },
             onInsertSnippet = { snippet ->
                 viewModel.insertHtmlAtCaret(snippet)
                 showMonetizationDialog = false
             },
             onCopySnippet = { snippet ->
-                viewModel.copyToClipboard(snippet, "OsunHive Backlink & Monetization")
+                viewModel.copyToClipboard(snippet, "Blogger Monetization & Video SEO")
             }
         )
     }

@@ -12,8 +12,7 @@ enum class KeyboardLayout {
     QWERTY,
     SYMBOLS,
     BLOGGER_TAGS,
-    KEYWORDS,
-    OSUNHIVE_UI
+    PLUS_UI
 }
 
 data class AutoTypeConfig(
@@ -52,99 +51,91 @@ data class LoadedFileInfo(
 object BloggerPresets {
     val TEMPLATES = listOf(
         SnippetItem(
-            id = "tmpl_osunhive_ui",
-            title = "Osunhive UI Blog Post (Plus UI Format)",
+            id = "tmpl_plus_ui_post",
+            title = "Plus UI 3.7.0 Complete Article",
             category = "Templates",
             isHtml = true,
-            content = OsunhiveUiTypography.SAMPLE_BLOG_POST_HTML
+            content = """<h2>Mastering Blogger Post Formatting & Auto-Typing</h2>
+<p class="pIndent"><span class="dropCap">W</span>elcome to the complete tutorial on creating beautiful, responsive Blogspot posts using <strong>Plus UI 3.7.0</strong> shortcodes. Everything in this post uses pure HTML classes, rendering seamlessly without template errors.</p>
+
+<div class="videoYt"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe></div>
+
+<div class="alert info"><strong>Notice:</strong> Always switch your Blogger editor to <strong>HTML view</strong> before pasting shortcodes.</div>
+
+<h2>1. Key Features & Automation Steps</h2>
+<ol class="steps">
+  <li>Open Blogger.com and switch your post composer to HTML view.</li>
+  <li>Insert your chosen Plus UI shortcodes (Video, Download Box, Safelink).</li>
+  <li>Use <strong>File Auto Batch Paste</strong> or the Typewriter Keyboard to inject content without lag.</li>
+</ol>
+
+<h2>2. Download Resources & App Packages</h2>
+<div class="dlBox">
+  <div class="fT" data-text="APK"></div>
+  <div class="fN">
+    <span>BloggerAutoTyper-v1.0.0.apk</span>
+    <span class="fS">24 MB</span>
+  </div>
+  <a class="button safeL" href="https://github.com/Olajide2004/Olajide-Sherif/releases" aria-label="Download"><i class="icon dl"></i></a>
+</div>
+
+<div class="btnF">
+  <a class="button" href="https://github.com/Olajide2004/Olajide-Sherif"><i class="icon dl"></i>GitHub Repo</a>
+  <a class="button ln" href="https://example.com/demo"><i class="icon demo"></i>Live Demo</a>
+</div>
+
+<h2>3. Performance Specifications</h2>
+<div class="table bordered stripped hovered">
+  <table>
+    <thead><tr><th>Feature</th><th>Implementation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Video Embed</td><td>Responsive 16:9 .videoYt</td><td>Verified</td></tr>
+      <tr><td>Safelink Protection</td><td>Countdown class .safeL</td><td>Active</td></tr>
+      <tr><td>Batch Pasting</td><td>Chunked auto paste</td><td>Ready</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<details class="sp"><summary>Frequently Asked Questions</summary><p>Plus UI classes work in standard Blogger templates without plugin dependencies.</p></details>"""
         ),
         SnippetItem(
-            id = "tmpl_seo_post",
-            title = "Blogger SEO Post Template",
+            id = "tmpl_video_showcase",
+            title = "Video & Media Showcase Post",
             category = "Templates",
             isHtml = true,
-            content = """<!-- Post Title: Top Android Auto-Typing Tips for Blogger -->
-<!-- Blogger Labels: Technology, Android Tools, Blogging, Content Creation -->
+            content = """<h2>Featured Video & Media Presentation</h2>
+<p class="pIndent">Embed YouTube videos and media galleries with fluid responsive layouts.</p>
 
-<div class="post-body-container" style="font-family: Arial, sans-serif; line-height: 1.7; color: #222;">
-    <h2 style="color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 6px;">Introduction</h2>
-    <p>Discover the best ways to automate keywords and content injection in <strong>Blogger.com</strong> posts. Utilizing automated typing workflows dramatically saves preparation time and enhances keyword consistency across articles.</p>
+<div class="videoYt"><iframe src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe></div>
 
-    <blockquote class="tr_bq" style="background: #f8f9fa; border-left: 4px solid #1a73e8; margin: 16px 0; padding: 12px 18px; font-style: italic;">
-        "Consistency in keyword optimization and structure is key to higher search engine rankings on Blogger."
-    </blockquote>
+<span class="psCaption">Official video tutorial demonstration</span>
 
-    <h2 style="color: #1a73e8;">Key Benefits & Targeted Keywords</h2>
-    <p>Here are the core focus keywords applied throughout this tutorial:</p>
-    <ul>
-        <li><mark style="background-color: #fff9c4; padding: 2px 4px;">auto typing keywords</mark> - Accelerate drafting</li>
-        <li><mark style="background-color: #fff9c4; padding: 2px 4px;">blogger html injection</mark> - Rich format control</li>
-        <li><mark style="background-color: #fff9c4; padding: 2px 4px;">content automation</mark> - Batch publishing efficiency</li>
-    </ul>
-
-    <h2 style="color: #1a73e8;">Step-by-Step Implementation</h2>
-    <p>To insert content safely into your Blogger editor:</p>
-    <ol>
-        <li>Load your HTML or plain text file into the workbench.</li>
-        <li>Select your target keywords and inject them into designated headers.</li>
-        <li>Use the <strong>Batch Copy</strong> tool to paste seamlessly into Blogger's post composer.</li>
-    </ol>
-
-    <div style="background: #e8f0fe; border-radius: 8px; padding: 16px; margin: 20px 0; text-align: center;">
-        <h3 style="margin-top: 0; color: #174ea6;">Ready to Optimize Your Blog?</h3>
-        <p style="margin-bottom: 0;">Publish high-quality articles consistently with clean HTML markup and targeted keyword density.</p>
-    </div>
-</div>"""
+<div class="psImg"><img src="https://via.placeholder.com/600x350" alt="Scene A"/><img src="https://via.placeholder.com/600x350" alt="Scene B"/></div>"""
         ),
         SnippetItem(
-            id = "tmpl_tech_review",
-            title = "Blogger Product / App Review",
+            id = "tmpl_product_spec",
+            title = "Product & Software Download Card",
             category = "Templates",
             isHtml = true,
-            content = """<!-- Blogger Labels: Reviews, Apps, Productivity -->
-<div class="review-box" style="font-family: sans-serif; line-height: 1.6;">
-    <h2 style="color: #d93025;">Application Review: Efficiency & Speed</h2>
-    <p>In this review, we test whether automated typing and keyword injection can streamline everyday blogging workflows.</p>
+            content = """<h2>Application Release & Download Specifications</h2>
+<div class="pInfo"><div><small data-text="Version"></small>1.0.0</div><div><small data-text="Size"></small>24 MB</div></div>
 
-    <div class="spec-table" style="background: #f1f3f4; border-radius: 6px; padding: 14px; margin: 14px 0;">
-        <p><strong>Verdict:</strong> 4.8 / 5.0</p>
-        <p><strong>Primary Focus:</strong> Blogger Content Automation</p>
-        <p><strong>Highlights:</strong> Zero-clipboard limit batch copy, simulated physical typing, instant HTML injection.</p>
-    </div>
-
-    <h3>Pros &amp; Cons</h3>
-    <p><strong>What works great:</strong> Fast keyword insertion, customizable human jitter, seamless HTML preview.</p>
-</div>"""
-        ),
-        SnippetItem(
-            id = "tmpl_keywords_block",
-            title = "SEO Keywords & Meta Block",
-            category = "Templates",
-            isHtml = true,
-            content = """<!-- ============================================ -->
-<!-- BLOGGER POST LABELS & KEYWORDS FOR INJECTION -->
-<!-- Labels: Android, Blogger SEO, Content Marketing, Auto Typing, Productivity -->
-<!-- Target Keywords: auto typing keywords, blogger html generator, content injection -->
-<!-- ============================================ -->
-<div class="blogger-seo-tags" style="font-size: 12px; color: #5f6368; border-top: 1px solid #dadce0; margin-top: 24px; padding-top: 10px;">
-    <strong>Related Tags:</strong>
-    <span>#AutoTyping</span>, <span>#BloggerTips</span>, <span>#HTMLInjection</span>, <span>#Keywords</span>, <span>#Blogging2026</span>
+<div class="dlBox">
+  <div class="fT" data-text="ZIP"></div>
+  <div class="fN"><span>Source-Release.zip</span><span class="fS">15 MB</span></div>
+  <a class="button safeL" href="https://github.com/Olajide2004/Olajide-Sherif/releases" aria-label="Download"><i class="icon dl"></i></a>
 </div>"""
         )
     )
 
     val DEFAULT_SNIPPETS = listOf(
-        SnippetItem("tag_p", "<p> Paragraph", "<p>{{content}}</p>", "HTML Tags", true),
-        SnippetItem("tag_h2", "<h2> Heading 2", "<h2>{{title}}</h2>", "HTML Tags", true),
-        SnippetItem("tag_h3", "<h3> Heading 3", "<h3>{{title}}</h3>", "HTML Tags", true),
-        SnippetItem("tag_bq", "<blockquote> Quote", "<blockquote class=\"tr_bq\">{{content}}</blockquote>", "HTML Tags", true),
-        SnippetItem("tag_link", "<a> Hyperlink", "<a href=\"https://\" target=\"_blank\" rel=\"noopener\">{{content}}</a>", "HTML Tags", true),
-        SnippetItem("tag_img", "<img> Image Separator", "<div class=\"separator\" style=\"clear: both; text-align: center;\"><img border=\"0\" src=\"https://placeholder.com\" alt=\"{{keyword}}\" /></div>", "HTML Tags", true),
-        SnippetItem("tag_mark", "<mark> Highlight", "<mark style=\"background-color: #fff9c4; padding: 2px 4px;\">{{keyword}}</mark>", "HTML Tags", true),
-        SnippetItem("tag_hr", "<hr /> Divider", "<hr style=\"border: 0; height: 1px; background: #e0e0e0; margin: 20px 0;\" />", "HTML Tags", true),
-        SnippetItem("tag_code", "<code> Code Snippet", "<pre style=\"background: #272822; color: #f8f8f2; padding: 12px; border-radius: 6px; overflow-x: auto;\"><code>{{code}}</code></pre>", "HTML Tags", true),
-        SnippetItem("kw_blogger", "Blogger.com SEO", "blogger seo, blogger post editor, html post formatting, custom labels", "SEO Keywords", false),
-        SnippetItem("kw_auto", "Auto Typing Keywords", "auto typing keywords, content injection, automated blogger writing, keyboard simulation", "SEO Keywords", false),
-        SnippetItem("kw_cta", "Call to Action Box", "<div style=\"background: #e8f0fe; border-left: 5px solid #1a73e8; padding: 12px 16px; margin: 16px 0;\"><p style=\"margin: 0; font-weight: bold;\">Liked this post? Leave a comment below and share with fellow bloggers!</p></div>", "Call To Action", true)
+        SnippetItem("tag_video", "🎬 YouTube Video", "<div class=\"videoYt\"><iframe src=\"https://www.youtube.com/embed/VIDEO_ID\" allowfullscreen></iframe></div>", "Media", true),
+        SnippetItem("tag_dlbox", "📥 Download Box", "<div class=\"dlBox\"><div class=\"fT\" data-text=\"ZIP\"></div><div class=\"fN\"><span>File.zip</span><span class=\"fS\">12 MB</span></div><a class=\"button safeL\" href=\"#\" aria-label=\"Download\"><i class=\"icon dl\"></i></a></div>", "Media", true),
+        SnippetItem("tag_safel", "🔒 Safelink Button", "<a class=\"button safeL\" href=\"REAL-URL\">Download</a>", "Links", true),
+        SnippetItem("tag_alert", "⚠️ Alert Info", "<div class=\"alert info\"><strong>Info</strong> Update note here.</div>", "Formatting", true),
+        SnippetItem("tag_steps", "🔢 Steps List", "<ol class=\"steps\"><li>Step 1</li><li>Step 2</li></ol>", "Formatting", true),
+        SnippetItem("tag_table", "📊 Styled Table", "<div class=\"table bordered stripped\"><table><thead><tr><th>Header</th></tr></thead><tbody><tr><td>Data</td></tr></tbody></table></div>", "Formatting", true),
+        SnippetItem("tag_spoiler", "📑 Spoiler", "<details class=\"sp\"><summary>Click to reveal</summary><p>Hidden text</p></details>", "Formatting", true),
+        SnippetItem("tag_code", "💻 Code Block", "<pre><code class=\"language-html\">&lt;p&gt;Code&lt;/p&gt;</code></pre>", "Formatting", true)
     )
 }

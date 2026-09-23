@@ -190,6 +190,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         autoTyperEngine.start(_config.value)
     }
 
+    fun startAutoTypeCustomText(text: String, customConfig: AutoTypeConfig) {
+        if (text.isEmpty()) return
+        _config.value = customConfig
+        autoTyperEngine.setSourceText(text, startFromBeginning = true)
+        autoTyperEngine.start(customConfig)
+    }
+
     fun pauseAutoType() {
         autoTyperEngine.pause()
     }

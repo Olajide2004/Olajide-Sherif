@@ -9,7 +9,7 @@ data class AutoCompleteSuggestion(
     val displayLabel: String,
     val prefixMatch: String,
     val insertSnippet: String,
-    val caretOffsetFromInsert: Int = 0, // offset inside inserted snippet where caret should rest
+    val caretOffsetFromInsert: Int = 0,
     val category: String = "HTML",
     val description: String = ""
 )
@@ -36,309 +36,311 @@ object CodeAutoCompleteEngine {
             description = "HTML comment block"
         ),
 
-        // OsunHive UI Heading & Lead
+        // Plus UI 3.7.0 Video & Media
         AutoCompleteSuggestion(
-            id = "sug_oh_h2",
-            displayLabel = "<h2 class=\"oh-h2\"> (Major Heading)",
-            prefixMatch = "<h2",
-            insertSnippet = "<h2 class=\"oh-h2\"></h2>\n",
-            caretOffsetFromInsert = 20,
-            category = "OsunHive UI",
-            description = "Major heading with gold bottom accent"
+            id = "sug_video_yt",
+            displayLabel = "videoYt (YouTube 16:9)",
+            prefixMatch = "video",
+            insertSnippet = "<div class=\"videoYt\"><iframe src=\"https://www.youtube.com/embed/VIDEO_ID\" allowfullscreen></iframe></div>\n",
+            caretOffsetFromInsert = 63,
+            category = "Images and Video",
+            description = "Responsive YouTube video embed"
         ),
         AutoCompleteSuggestion(
-            id = "sug_oh_h3",
-            displayLabel = "<h3 class=\"oh-h3\"> (Subheading)",
-            prefixMatch = "<h3",
-            insertSnippet = "<h3 class=\"oh-h3\"></h3>\n",
-            caretOffsetFromInsert = 20,
-            category = "OsunHive UI",
-            description = "Subheading with modern typography"
+            id = "sug_zm_img",
+            displayLabel = "zmImg (Zoomable Image)",
+            prefixMatch = "zm",
+            insertSnippet = "<span class=\"zmImg\"><img src=\"IMAGE-URL\" alt=\"Description\"/></span>",
+            caretOffsetFromInsert = 29,
+            category = "Images and Video",
+            description = "Click-to-zoom interactive image"
         ),
         AutoCompleteSuggestion(
-            id = "sug_oh_lead",
-            displayLabel = "<p class=\"oh-lead\"> (Lead Paragraph)",
-            prefixMatch = "<p",
-            insertSnippet = "<p class=\"oh-lead\"></p>\n",
-            caretOffsetFromInsert = 19,
-            category = "OsunHive UI",
-            description = "Featured introductory paragraph"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_oh_dropcap",
-            displayLabel = "<span class=\"oh-dropcap\"> (Drop Cap)",
-            prefixMatch = "drop",
-            insertSnippet = "<span class=\"oh-dropcap\">A</span>",
-            caretOffsetFromInsert = 25,
-            category = "OsunHive UI",
-            description = "Large editorial vintage drop letter"
+            id = "sug_grid_img",
+            displayLabel = "psImg (Grid 2-Col Images)",
+            prefixMatch = "psimg",
+            insertSnippet = "<div class=\"psImg\"><img src=\"URL_1\" alt=\"1\"/><img src=\"URL_2\" alt=\"2\"/></div>\n",
+            caretOffsetFromInsert = 28,
+            category = "Images and Video",
+            description = "Two images displayed side by side"
         ),
 
-        // OsunHive UI Alerts
+        // Plus UI 3.7.0 Download Box & Safelink
         AutoCompleteSuggestion(
-            id = "sug_oh_alert_info",
-            displayLabel = "oh-alert-info (Blue Callout)",
-            prefixMatch = "oh-alert",
-            insertSnippet = "<div class=\"oh-alert oh-alert-info\"><span class=\"oh-alert-icon\">ℹ️</span><div class=\"oh-alert-text\"><strong>Note:</strong> </div></div>\n",
-            caretOffsetFromInsert = 113,
-            category = "OsunHive Alerts",
+            id = "sug_dlbox",
+            displayLabel = "dlBox (Download Card)",
+            prefixMatch = "dlb",
+            insertSnippet = "<div class=\"dlBox\">\n  <div class=\"fT\" data-text=\"ZIP\"></div>\n  <div class=\"fN\">\n    <span>Package.zip</span>\n    <span class=\"fS\">15 MB</span>\n  </div>\n  <a class=\"button safeL\" href=\"DOWNLOAD-URL\" aria-label=\"Download\"><i class=\"icon dl\"></i></a>\n</div>\n",
+            caretOffsetFromInsert = 160,
+            category = "Download Box",
+            description = "Plus UI file download box with safelink"
+        ),
+        AutoCompleteSuggestion(
+            id = "sug_safelink",
+            displayLabel = "safeL (Safelink Button)",
+            prefixMatch = "safel",
+            insertSnippet = "<a class=\"button safeL\" href=\"REAL-URL\"><i class=\"icon dl\"></i>Download</a>",
+            caretOffsetFromInsert = 29,
+            category = "Safelink",
+            description = "Safelink protected countdown button"
+        ),
+
+        // Plus UI 3.7.0 Text and Layout
+        AutoCompleteSuggestion(
+            id = "sug_dropcap",
+            displayLabel = "dropCap (Editorial Initial)",
+            prefixMatch = "drop",
+            insertSnippet = "<span class=\"dropCap\">T</span>",
+            caretOffsetFromInsert = 22,
+            category = "Text and Layout",
+            description = "Large editorial initial letter"
+        ),
+        AutoCompleteSuggestion(
+            id = "sug_pindent",
+            displayLabel = "pIndent (Indented Paragraph)",
+            prefixMatch = "pind",
+            insertSnippet = "<p class=\"pIndent\">Your paragraph begins here.</p>\n",
+            caretOffsetFromInsert = 19,
+            category = "Text and Layout",
+            description = "First-line indented narrative paragraph"
+        ),
+        AutoCompleteSuggestion(
+            id = "sug_extl",
+            displayLabel = "extL (External Link Arrow)",
+            prefixMatch = "extl",
+            insertSnippet = "<a class=\"extL\" href=\"https://\" target=\"_blank\" rel=\"noopener\">Link Text</a>",
+            caretOffsetFromInsert = 29,
+            category = "Text and Layout",
+            description = "External link styled with arrow icon"
+        ),
+
+        // Plus UI 3.7.0 Buttons
+        AutoCompleteSuggestion(
+            id = "sug_button_solid",
+            displayLabel = "button (Solid Button)",
+            prefixMatch = "btn",
+            insertSnippet = "<a class=\"button\" href=\"URL\">Get Started</a>",
+            caretOffsetFromInsert = 24,
+            category = "Buttons",
+            description = "Plus UI primary theme button"
+        ),
+        AutoCompleteSuggestion(
+            id = "sug_button_outline",
+            displayLabel = "button ln (Outline Button)",
+            prefixMatch = "btnln",
+            insertSnippet = "<a class=\"button ln\" href=\"URL\">Learn More</a>",
+            caretOffsetFromInsert = 27,
+            category = "Buttons",
+            description = "Bordered outline button"
+        ),
+        AutoCompleteSuggestion(
+            id = "sug_btnf_row",
+            displayLabel = "btnF (Dual Button Row)",
+            prefixMatch = "btnf",
+            insertSnippet = "<div class=\"btnF\"><a class=\"button\" href=\"#\"><i class=\"icon dl\"></i>Download</a><a class=\"button ln\" href=\"#\"><i class=\"icon demo\"></i>Demo</a></div>\n",
+            caretOffsetFromInsert = 41,
+            category = "Buttons",
+            description = "Paired action buttons row"
+        ),
+
+        // Plus UI 3.7.0 Alerts & Notes
+        AutoCompleteSuggestion(
+            id = "sug_alert_info",
+            displayLabel = "alert info (Blue Notice)",
+            prefixMatch = "alert",
+            insertSnippet = "<div class=\"alert info\"><strong>Info</strong> Essential information.</div>\n",
+            caretOffsetFromInsert = 44,
+            category = "Alerts and Notes",
             description = "Informative blue note callout"
         ),
         AutoCompleteSuggestion(
-            id = "sug_oh_alert_success",
-            displayLabel = "oh-alert-success (Green Success)",
-            prefixMatch = "oh-succ",
-            insertSnippet = "<div class=\"oh-alert oh-alert-success\"><span class=\"oh-alert-icon\">✅</span><div class=\"oh-alert-text\"><strong>Success:</strong> </div></div>\n",
-            caretOffsetFromInsert = 119,
-            category = "OsunHive Alerts",
+            id = "sug_alert_success",
+            displayLabel = "alert success (Green Box)",
+            prefixMatch = "alert",
+            insertSnippet = "<div class=\"alert success\"><strong>Success</strong> Done successfully.</div>\n",
+            caretOffsetFromInsert = 50,
+            category = "Alerts and Notes",
             description = "Green success message"
         ),
         AutoCompleteSuggestion(
-            id = "sug_oh_alert_warning",
-            displayLabel = "oh-alert-warning (Amber Notice)",
-            prefixMatch = "oh-warn",
-            insertSnippet = "<div class=\"oh-alert oh-alert-warning\"><span class=\"oh-alert-icon\">⚠️</span><div class=\"oh-alert-text\"><strong>Warning:</strong> </div></div>\n",
-            caretOffsetFromInsert = 119,
-            category = "OsunHive Alerts",
-            description = "Amber caution callout"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_oh_alert_danger",
-            displayLabel = "oh-alert-danger (Red Warning)",
-            prefixMatch = "oh-dang",
-            insertSnippet = "<div class=\"oh-alert oh-alert-danger\"><span class=\"oh-alert-icon\">⛔</span><div class=\"oh-alert-text\"><strong>Caution:</strong> </div></div>\n",
-            caretOffsetFromInsert = 118,
-            category = "OsunHive Alerts",
-            description = "Red critical notice"
-        ),
-
-        // OsunHive UI Buttons & Links
-        AutoCompleteSuggestion(
-            id = "sug_oh_btn_primary",
-            displayLabel = "<a class=\"oh-btn\"> (Gold Button)",
-            prefixMatch = "oh-btn",
-            insertSnippet = "<a href=\"#\" class=\"oh-btn\">Action Button</a>",
-            caretOffsetFromInsert = 27,
-            category = "OsunHive Buttons",
-            description = "Signal gold CTA button"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_oh_btn_download",
-            displayLabel = "oh-btn-download (Emerald CTA)",
-            prefixMatch = "download",
-            insertSnippet = "<a href=\"#\" class=\"oh-btn oh-btn-download\">Download File</a>",
-            caretOffsetFromInsert = 43,
-            category = "OsunHive Buttons",
-            description = "High-CTR download button"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_oh_btn_demo",
-            displayLabel = "oh-btn-demo (Purple Live Demo)",
-            prefixMatch = "demo",
-            insertSnippet = "<a href=\"#\" class=\"oh-btn oh-btn-demo\" target=\"_blank\">Live Demo</a>",
-            caretOffsetFromInsert = 55,
-            category = "OsunHive Buttons",
-            description = "Live demo action button"
-        ),
-
-        // OsunHive UI Interactive & Containers
-        AutoCompleteSuggestion(
-            id = "sug_oh_code_box",
-            displayLabel = "oh-code-box (Code Snippet Box)",
-            prefixMatch = "code",
-            insertSnippet = "<div class=\"oh-code-box\"><div class=\"oh-code-header\"><span>HTML</span></div><pre class=\"oh-pre\"><code></code></pre></div>\n",
-            caretOffsetFromInsert = 90,
-            category = "OsunHive Code",
-            description = "Dark terminal style code block"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_oh_accordion",
-            displayLabel = "oh-accordion (FAQ Accordion)",
-            prefixMatch = "faq",
-            insertSnippet = "<details class=\"oh-accordion\"><summary class=\"oh-summary\">Question title?</summary><div class=\"oh-content\"><p>Answer details here.</p></div></details>\n",
-            caretOffsetFromInsert = 57,
-            category = "OsunHive UI",
-            description = "Expandable FAQ details accordion"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_oh_table",
-            displayLabel = "oh-table (Data Table)",
-            prefixMatch = "table",
-            insertSnippet = "<div class=\"oh-table-wrapper\"><table class=\"oh-table\"><thead><tr><th>Header 1</th><th>Header 2</th></tr></thead><tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody></table></div>\n",
-            caretOffsetFromInsert = 73,
-            category = "OsunHive UI",
-            description = "Responsive striped data table"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_oh_list_check",
-            displayLabel = "oh-list-check (Feature Checklist)",
-            prefixMatch = "list",
-            insertSnippet = "<ul class=\"oh-list-check\">\n  <li>First feature</li>\n  <li>Second feature</li>\n</ul>\n",
-            caretOffsetFromInsert = 33,
-            category = "OsunHive UI",
-            description = "Checkmark bullet list"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_oh_backlink",
-            displayLabel = "oh-footer-credit (OsunHive Backlink)",
-            prefixMatch = "osun",
-            insertSnippet = "<div class=\"oh-footer-credit\"><p>Formatted with <a href=\"https://www.osunhive.name.ng\" target=\"_blank\" rel=\"noopener\">OsunHive UI</a> • Join our Blogger community on <a href=\"https://t.me/Osunhive\" target=\"_blank\" rel=\"noopener\">Telegram @Osunhive</a></p></div>\n",
-            caretOffsetFromInsert = 247,
-            category = "Monetisation",
-            description = "Traffic driving backlink to osunhive.name.ng & t.me/Osunhive"
-        ),
-
-        // Standard HTML
-        AutoCompleteSuggestion(
-            id = "sug_p",
-            displayLabel = "<p></p> (Paragraph)",
-            prefixMatch = "<p>",
-            insertSnippet = "<p></p>\n",
-            caretOffsetFromInsert = 3,
-            category = "HTML"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_b",
-            displayLabel = "<strong></strong> (Bold)",
-            prefixMatch = "<b",
-            insertSnippet = "<strong></strong>",
-            caretOffsetFromInsert = 8,
-            category = "HTML"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_i",
-            displayLabel = "<em></em> (Italic)",
-            prefixMatch = "<i",
-            insertSnippet = "<em></em>",
-            caretOffsetFromInsert = 4,
-            category = "HTML"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_u",
-            displayLabel = "<u></u> (Underline)",
-            prefixMatch = "<u",
-            insertSnippet = "<u></u>",
-            caretOffsetFromInsert = 3,
-            category = "HTML"
-        ),
-        AutoCompleteSuggestion(
-            id = "sug_a",
-            displayLabel = "<a href=\"\"> (Link)",
-            prefixMatch = "<a",
-            insertSnippet = "<a href=\"https://\" target=\"_blank\" rel=\"noopener\"></a>",
+            id = "sug_alert_warning",
+            displayLabel = "alert warning (Amber Box)",
+            prefixMatch = "alert",
+            insertSnippet = "<div class=\"alert warning\"><strong>Warning</strong> Please take note.</div>\n",
             caretOffsetFromInsert = 50,
-            category = "HTML"
+            category = "Alerts and Notes",
+            description = "Amber warning callout"
         ),
         AutoCompleteSuggestion(
-            id = "sug_mark",
-            displayLabel = "<mark class=\"oh-mark\"> (Highlight)",
-            prefixMatch = "<mark",
-            insertSnippet = "<mark class=\"oh-mark\"></mark>",
-            caretOffsetFromInsert = 22,
-            category = "HTML"
+            id = "sug_alert_error",
+            displayLabel = "alert error (Red Alert)",
+            prefixMatch = "alert",
+            insertSnippet = "<div class=\"alert error\"><strong>Error</strong> Critical notice.</div>\n",
+            caretOffsetFromInsert = 46,
+            category = "Alerts and Notes",
+            description = "Red cautionary callout"
         ),
         AutoCompleteSuggestion(
-            id = "sug_blockquote",
-            displayLabel = "<blockquote class=\"oh-blockquote\">",
-            prefixMatch = "<block",
-            insertSnippet = "<blockquote class=\"oh-blockquote\"><p>\"\"</p><cite class=\"oh-cite\">— Author</cite></blockquote>\n",
-            caretOffsetFromInsert = 37,
-            category = "HTML"
+            id = "sug_note",
+            displayLabel = "note (* Icon Note)",
+            prefixMatch = "note",
+            insertSnippet = "<p class=\"note\">Editorial note to clarify details.</p>\n",
+            caretOffsetFromInsert = 16,
+            category = "Alerts and Notes",
+            description = "Asterisk icon note"
+        ),
+
+        // Plus UI 3.7.0 Code & Highlight
+        AutoCompleteSuggestion(
+            id = "sug_pre_code",
+            displayLabel = "pre code (Dark Code Block)",
+            prefixMatch = "pre",
+            insertSnippet = "<pre><code class=\"language-html\">\n\n</code></pre>\n",
+            caretOffsetFromInsert = 34,
+            category = "Code",
+            description = "Syntax highlighted code block"
         ),
         AutoCompleteSuggestion(
-            id = "sug_hr",
-            displayLabel = "<hr class=\"oh-hr\" /> (Divider)",
-            prefixMatch = "<hr",
-            insertSnippet = "<hr class=\"oh-hr\" />\n",
-            caretOffsetFromInsert = 21,
-            category = "HTML"
+            id = "sug_code_comment",
+            displayLabel = "pre data-comment (Code Header)",
+            prefixMatch = "pre",
+            insertSnippet = "<pre data-comment=\"filename.ext\"><code>\n\n</code></pre>\n",
+            caretOffsetFromInsert = 39,
+            category = "Code",
+            description = "Code block showing filename header"
+        ),
+
+        // Plus UI 3.7.0 Spoilers & ToC
+        AutoCompleteSuggestion(
+            id = "sug_sp_spoiler",
+            displayLabel = "details.sp (Click to Reveal)",
+            prefixMatch = "spoil",
+            insertSnippet = "<details class=\"sp\"><summary>Click to reveal</summary><p>Hidden details.</p></details>\n",
+            caretOffsetFromInsert = 55,
+            category = "Spoiler, Accordion, ToC",
+            description = "Collapsible spoiler container"
+        ),
+        AutoCompleteSuggestion(
+            id = "sug_accordion",
+            displayLabel = "details.ac (FAQ Accordion)",
+            prefixMatch = "accord",
+            insertSnippet = "<details class=\"ac\"><summary>Frequently Asked Question?</summary><p>Answer text.</p></details>\n",
+            caretOffsetFromInsert = 66,
+            category = "Spoiler, Accordion, ToC",
+            description = "Arrow toggle accordion"
+        ),
+        AutoCompleteSuggestion(
+            id = "sug_toc_auto",
+            displayLabel = "details.sp.toc (Auto ToC)",
+            prefixMatch = "toc",
+            insertSnippet = "<details class=\"sp toc\"><summary>Table of Contents</summary><div class=\"aToc\"></div></details>\n",
+            caretOffsetFromInsert = 94,
+            category = "Spoiler, Accordion, ToC",
+            description = "Auto-generated Table of Contents"
+        ),
+
+        // Plus UI 3.7.0 Lists
+        AutoCompleteSuggestion(
+            id = "sug_steps",
+            displayLabel = "ol.steps (Numbered Steps)",
+            prefixMatch = "steps",
+            insertSnippet = "<ol class=\"steps\">\n  <li>First step</li>\n  <li>Second step</li>\n</ol>\n",
+            caretOffsetFromInsert = 25,
+            category = "Lists",
+            description = "Numbered circular badges connected with line"
+        ),
+        AutoCompleteSuggestion(
+            id = "sug_pros",
+            displayLabel = "ul.pros (Green Check List)",
+            prefixMatch = "pros",
+            insertSnippet = "<ul class=\"pros\">\n  <li>Advantage 1</li>\n  <li>Advantage 2</li>\n</ul>\n",
+            caretOffsetFromInsert = 24,
+            category = "Lists",
+            description = "Plus marker list"
+        ),
+
+        // Plus UI 3.7.0 Tables
+        AutoCompleteSuggestion(
+            id = "sug_table_striped",
+            displayLabel = "table.bordered.stripped (Styled Table)",
+            prefixMatch = "table",
+            insertSnippet = "<div class=\"table bordered stripped\">\n  <table>\n    <thead><tr><th>Item</th><th>Detail</th></tr></thead>\n    <tbody><tr><td>Row 1</td><td>Value 1</td></tr></tbody>\n  </table>\n</div>\n",
+            caretOffsetFromInsert = 106,
+            category = "Tables",
+            description = "Responsive striped table"
+        ),
+
+        // Plus UI 3.7.0 Tabs
+        AutoCompleteSuggestion(
+            id = "sug_tabs_css",
+            displayLabel = "div.tabs (Switchable Radio Tabs)",
+            prefixMatch = "tabs",
+            insertSnippet = "<div class=\"tabs\">\n  <input id=\"t-0\" type=\"radio\" name=\"t1\" checked=\"checked\"/>\n  <input id=\"t-1\" type=\"radio\" name=\"t1\"/>\n  <div><label for=\"t-0\" data-text=\"Tab 1\"></label><label for=\"t-1\" data-text=\"Tab 2\"></label></div>\n  <div class=\"c-0\">Content 1</div>\n  <div class=\"c-1\">Content 2</div>\n</div>\n",
+            caretOffsetFromInsert = 227,
+            category = "Tabs",
+            description = "CSS radio switchable tabs"
         )
     )
 
     fun getSuggestions(
         currentText: String,
-        selectionStart: Int,
-        customClasses: List<CustomTypographyClass>
+        caretPosition: Int,
+        customClasses: List<CustomTypographyClass> = emptyList()
     ): List<AutoCompleteSuggestion> {
-        val wordAtCursor = extractWordPrefix(currentText, selectionStart).lowercase()
+        val safeCaret = caretPosition.coerceIn(0, currentText.length)
+        val textBeforeCaret = currentText.substring(0, safeCaret)
+        val lastWord = textBeforeCaret.substringAfterLast(' ').substringAfterLast('\n').substringAfterLast('\t')
 
-        // Combine base suggestions with user custom classes
+        if (lastWord.length < 2) return emptyList()
+
         val customSuggestions = customClasses.map { cls ->
             AutoCompleteSuggestion(
                 id = "custom_${cls.id}",
-                displayLabel = ".${cls.className} (${cls.name})",
-                prefixMatch = cls.className.lowercase(),
-                insertSnippet = cls.htmlTemplate.replace("{{text}}", "").replace("{{title}}", cls.name) + "\n",
-                caretOffsetFromInsert = 0,
-                category = "Custom Classes",
+                displayLabel = "${cls.name} (.${cls.className})",
+                prefixMatch = cls.className,
+                insertSnippet = cls.htmlTemplate,
+                caretOffsetFromInsert = cls.htmlTemplate.length,
+                category = cls.category,
                 description = cls.description
             )
         }
 
         val all = BASE_SUGGESTIONS + customSuggestions
+        val query = lastWord.lowercase()
 
-        if (wordAtCursor.isEmpty()) {
-            // Return top popular suggestions when idle
-            return all.take(8)
-        }
-
-        // Rank suggestions matching word at cursor
-        val matches = all.filter { sug ->
-            sug.prefixMatch.lowercase().contains(wordAtCursor) ||
-            sug.displayLabel.lowercase().contains(wordAtCursor) ||
-            sug.id.lowercase().contains(wordAtCursor)
-        }
-
-        return if (matches.isNotEmpty()) matches else all.take(6)
-    }
-
-    private fun extractWordPrefix(text: String, pos: Int): String {
-        if (pos <= 0 || pos > text.length) return ""
-        var start = pos - 1
-        while (start >= 0 && !text[start].isWhitespace()) {
-            start--
-        }
-        return text.substring(start + 1, pos)
+        return all.filter {
+            it.prefixMatch.lowercase().contains(query) ||
+            it.displayLabel.lowercase().contains(query) ||
+            it.category.lowercase().contains(query)
+        }.take(8)
     }
 
     fun applySuggestion(
-        current: TextFieldValue,
+        currentFieldValue: TextFieldValue,
         suggestion: AutoCompleteSuggestion
     ): TextFieldValue {
-        val text = current.text
-        val pos = current.selection.start
+        val text = currentFieldValue.text
+        val caret = currentFieldValue.selection.start.coerceIn(0, text.length)
+        val textBefore = text.substring(0, caret)
+        val lastDelimiterIndex = maxOf(
+            textBefore.lastIndexOf(' '),
+            textBefore.lastIndexOf('\n'),
+            textBefore.lastIndexOf('\t'),
+            textBefore.lastIndexOf('<')
+        )
 
-        // Find prefix to replace
-        var start = pos - 1
-        while (start >= 0 && !text[start].isWhitespace() && text[start] != '<' && text[start] != '.') {
-            start--
-        }
-        if (start < 0) start = 0
-        if (start < pos && (text[start] == '<' || text[start] == '.')) {
-            // Keep start at the boundary character or include it depending on suggestion
-        }
-
-        val replaceStart = if (start < pos) {
-            // If prefix starts with '<' and suggestion starts with '<', replace from start
-            if (suggestion.insertSnippet.startsWith("<") && text.getOrNull(start) == '<') {
-                start
-            } else {
-                start + 1
-            }
-        } else pos
-
-        val replaceEnd = current.selection.end.coerceAtLeast(pos)
-
-        val before = text.substring(0, replaceStart)
-        val after = text.substring(replaceEnd)
-        val newText = before + suggestion.insertSnippet + after
-
-        val newCaretPos = if (suggestion.caretOffsetFromInsert > 0) {
-            (replaceStart + suggestion.caretOffsetFromInsert).coerceAtMost(newText.length)
+        val replaceStart = if (lastDelimiterIndex >= 0 && lastDelimiterIndex < caret) {
+            if (textBefore[lastDelimiterIndex] == '<') lastDelimiterIndex else lastDelimiterIndex + 1
         } else {
-            (replaceStart + suggestion.insertSnippet.length).coerceAtMost(newText.length)
+            0
         }
 
-        return TextFieldValue(newText, TextRange(newCaretPos))
+        val newText = text.substring(0, replaceStart) + suggestion.insertSnippet + text.substring(caret)
+        val targetCaret = (replaceStart + suggestion.caretOffsetFromInsert).coerceIn(0, newText.length)
+
+        return TextFieldValue(
+            text = newText,
+            selection = TextRange(targetCaret)
+        )
     }
 }

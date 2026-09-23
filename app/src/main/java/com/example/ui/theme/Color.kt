@@ -2,6 +2,29 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+// Signal Gold & Accent colors
+val SignalGold = Color(0xFFD4AF37)
+val SignalGoldDark = Color(0xFFB8860B)
+val AlertRed = Color(0xFFE53935)
+
+// Ink and Paper shades for authentic typewriter / workbench contrast
+val InkDark = Color(0xFFE2E8F0)
+val InkLight = Color(0xFF1E293B)
+val PaperDark = Color(0xFF0F172A)
+val PaperLight = Color(0xFFF8FAFC)
+
+// Keycap styling
+val KeycapDark = Color(0xFF1E293B)
+val KeycapLight = Color(0xFFF1F5F9)
+val KeyedgeDark = Color(0xFF334155)
+val KeyedgeLight = Color(0xFFCBD5E1)
+
+// Steel & Surface
+val SteelDark = Color(0xFF475569)
+val SteelLight = Color(0xFF94A3B8)
+val SurfaceElevatedDark = Color(0xFF192233)
+val SurfaceElevatedLight = Color(0xFFEDF2F7)
+
 // Blogger Keyboard Signature Theme - Deep Slate, Cyan, and Amber Gold
 val SlateDarkBackground = Color(0xFF0B0F19)
 val SlateDarkSurface = Color(0xFF131B2E)

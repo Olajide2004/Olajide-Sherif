@@ -40,7 +40,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.model.KeyboardLayout
-import com.example.model.OsunhiveUiTypography
 import com.example.ui.theme.SignalGold
 
 @Composable
@@ -111,19 +110,9 @@ fun TypewriterKeyboard(
                 )
             )
             FilterChip(
-                selected = currentLayout == KeyboardLayout.KEYWORDS,
-                onClick = { onLayoutChange(KeyboardLayout.KEYWORDS) },
-                label = { Text("Keywords", fontSize = 11.sp, fontFamily = FontFamily.Monospace) },
-                leadingIcon = { Icon(Icons.Default.Tag, contentDescription = null, modifier = Modifier.size(14.dp)) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = SignalGold,
-                    selectedLabelColor = Color(0xFF1C2B2A)
-                )
-            )
-            FilterChip(
-                selected = currentLayout == KeyboardLayout.OSUNHIVE_UI,
-                onClick = { onLayoutChange(KeyboardLayout.OSUNHIVE_UI) },
-                label = { Text("Osunhive UI", fontSize = 11.sp, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold) },
+                selected = currentLayout == KeyboardLayout.PLUS_UI,
+                onClick = { onLayoutChange(KeyboardLayout.PLUS_UI) },
+                label = { Text("Plus UI 3.7.0", fontSize = 11.sp, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold) },
                 leadingIcon = { Icon(Icons.Default.FormatPaint, contentDescription = null, modifier = Modifier.size(14.dp)) },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = SignalGold,
@@ -178,16 +167,8 @@ fun TypewriterKeyboard(
                     onSpace = onSpace
                 )
             }
-            KeyboardLayout.KEYWORDS -> {
-                KeywordsLayout(
-                    onInsertKeyword = onKeyPress,
-                    onBackspace = onBackspace,
-                    onEnter = onEnter,
-                    onSpace = onSpace
-                )
-            }
-            KeyboardLayout.OSUNHIVE_UI -> {
-                OsunhiveUiLayout(
+            KeyboardLayout.PLUS_UI -> {
+                PlusUiKeyboardLayout(
                     onInsertSnippet = onKeyPress,
                     onBackspace = onBackspace,
                     onEnter = onEnter,
@@ -485,113 +466,46 @@ private fun BloggerTagsLayout(
 }
 
 @Composable
-private fun KeywordsLayout(
-    onInsertKeyword: (String) -> Unit,
-    onBackspace: () -> Unit,
-    onEnter: () -> Unit,
-    onSpace: () -> Unit
-) {
-    val keywordsRow1 = listOf(
-        "auto typing keywords" to "auto typing keywords",
-        "blogger html" to "blogger html injection",
-        "content automation" to "content automation"
-    )
-    val keywordsRow2 = listOf(
-        "seo tags" to "android, blogging, seo, keywords, automated typing",
-        "post labels" to "Technology, Productivity, Tools",
-        "alt text" to "alt=\"keyword-optimized-image\""
-    )
-    val keywordsRow3 = listOf(
-        "target keywords" to "target keywords: auto typing, blogger post, content injection",
-        "blogger.com" to "Blogger.com",
-        "publish tips" to "Publishing with optimized keyword density"
-    )
-
-    Row(modifier = Modifier.fillMaxWidth()) {
-        keywordsRow1.forEach { (label, text) ->
-            TypewriterKey(
-                label = label,
-                modifier = Modifier.weight(1f),
-                onClick = { onInsertKeyword("$text ") }
-            )
-        }
-    }
-    Row(modifier = Modifier.fillMaxWidth()) {
-        keywordsRow2.forEach { (label, text) ->
-            TypewriterKey(
-                label = label,
-                modifier = Modifier.weight(1f),
-                onClick = { onInsertKeyword("$text ") }
-            )
-        }
-    }
-    Row(modifier = Modifier.fillMaxWidth()) {
-        keywordsRow3.forEach { (label, text) ->
-            TypewriterKey(
-                label = label,
-                modifier = Modifier.weight(1f),
-                onClick = { onInsertKeyword("$text ") }
-            )
-        }
-    }
-    Row(modifier = Modifier.fillMaxWidth()) {
-        TypewriterKey(
-            label = "SPACE",
-            isSpecial = true,
-            modifier = Modifier.weight(2f),
-            onClick = onSpace
-        )
-        TypewriterKey(
-            label = "⌫",
-            isSpecial = true,
-            modifier = Modifier.weight(1f),
-            onClick = onBackspace
-        )
-        TypewriterKey(
-            label = "⏎",
-            isSpecial = true,
-            modifier = Modifier.weight(1f),
-            onClick = onEnter
-        )
-    }
-}
-
-@Composable
-private fun OsunhiveUiLayout(
+private fun PlusUiKeyboardLayout(
     onInsertSnippet: (String) -> Unit,
     onBackspace: () -> Unit,
     onEnter: () -> Unit,
     onSpace: () -> Unit
 ) {
+    // Row 1: High Priority Video, Download Box, Safelink, DropCap, Indented Paragraph
     val row1 = listOf(
-        "DropCap" to "<span class=\"oh-dropcap\">A</span>",
-        "Lead" to "<p class=\"oh-lead\"></p>",
-        "H2 Accent" to "<h2 class=\"oh-h2\"></h2>",
-        "H3" to "<h3 class=\"oh-h3\"></h3>",
-        "Mark" to "<mark class=\"oh-mark\"></mark>",
-        "Badges" to "<span class=\"oh-badge oh-badge-gold\">Featured</span>"
+        "🎬 Video" to "<div class=\"videoYt\"><iframe src=\"https://www.youtube.com/embed/VIDEO_ID\" allowfullscreen></iframe></div>\n",
+        "📥 DlBox" to "<div class=\"dlBox\"><div class=\"fT\" data-text=\"ZIP\"></div><div class=\"fN\"><span>File.zip</span><span class=\"fS\">12 MB</span></div><a class=\"button safeL\" href=\"#\" aria-label=\"Download\"><i class=\"icon dl\"></i></a></div>\n",
+        "🔒 SafeL" to "<a class=\"button safeL\" href=\"REAL-URL\">Download</a>",
+        "DropCap" to "<span class=\"dropCap\">T</span>",
+        "pIndent" to "<p class=\"pIndent\">Paragraph text here.</p>\n"
     )
 
+    // Row 2: Plus UI Alert & Note Callouts
     val row2 = listOf(
-        "Alert Info" to "<div class=\"oh-alert oh-alert-info\"><div class=\"oh-alert-icon\">ℹ️</div><div class=\"oh-alert-body\"><strong>Note:</strong> </div></div>",
-        "Alert Tip" to "<div class=\"oh-alert oh-alert-success\"><div class=\"oh-alert-icon\">✅</div><div class=\"oh-alert-body\"><strong>Tip:</strong> </div></div>",
-        "Alert Warn" to "<div class=\"oh-alert oh-alert-warning\"><div class=\"oh-alert-icon\">⚠️</div><div class=\"oh-alert-body\"><strong>Caution:</strong> </div></div>",
-        "Alert Danger" to "<div class=\"oh-alert oh-alert-danger\"><div class=\"oh-alert-icon\">⛔</div><div class=\"oh-alert-body\"><strong>Important:</strong> </div></div>",
-        "Quote" to "<blockquote class=\"oh-blockquote\"><p></p><cite class=\"oh-cite\"></cite></blockquote>"
+        "Alert Info" to "<div class=\"alert info\"><strong>Info</strong> Information text here.</div>\n",
+        "Alert Success" to "<div class=\"alert success\"><strong>Success</strong> Action succeeded.</div>\n",
+        "Alert Warn" to "<div class=\"alert warning\"><strong>Warning</strong> Caution text.</div>\n",
+        "Alert Error" to "<div class=\"alert error\"><strong>Error</strong> Critical notice.</div>\n",
+        "Note" to "<p class=\"note\">Editorial note.</p>\n"
     )
 
+    // Row 3: Plus UI Buttons & Code
     val row3 = listOf(
-        "Primary Btn" to "<a href=\"#\" class=\"oh-btn oh-btn-primary\">Read More</a>",
-        "Download" to "<a href=\"#download\" class=\"oh-btn oh-btn-download\">⬇️ Download</a>",
-        "Demo" to "<a href=\"#demo\" class=\"oh-btn oh-btn-demo\">🚀 Live Demo</a>",
-        "Outline" to "<a href=\"#\" class=\"oh-btn oh-btn-outline\">Learn More</a>",
-        "Code Box" to "<div class=\"oh-code-box\"><div class=\"oh-code-header\"><span>HTML</span></div><pre class=\"oh-pre\"><code></code></pre></div>"
+        "Button" to "<a class=\"button\" href=\"URL\">Link</a>",
+        "Outline" to "<a class=\"button ln\" href=\"URL\">Link</a>",
+        "Dl Btn" to "<a class=\"button\" href=\"URL\"><i class=\"icon dl\"></i>Download</a>",
+        "Btn Row" to "<div class=\"btnF\"><a class=\"button\" href=\"#\">Download</a><a class=\"button ln\" href=\"#\">Demo</a></div>\n",
+        "Code" to "<pre><code class=\"language-html\">&lt;div&gt;&lt;/div&gt;</code></pre>\n"
     )
 
+    // Row 4: Spoiler, Steps, Table, Tabs + Navigation
     val row4 = listOf(
-        "FAQ" to "<details class=\"oh-accordion\"><summary class=\"oh-summary\">Question Title?</summary><div class=\"oh-content\"><p></p></div></details>",
-        "Table" to "<div class=\"oh-table-wrapper\"><table class=\"oh-table\"><thead><tr><th>Feature</th><th>Osunhive UI</th></tr></thead><tbody><tr><td>Item 1</td><td>Active</td></tr></tbody></table></div>",
-        "Checklist" to "<ul class=\"oh-list-check\"><li>First key point</li><li>Second key point</li></ul>"
+        "Spoiler" to "<details class=\"sp\"><summary>Click to reveal</summary><p>Hidden text</p></details>\n",
+        "Accordion" to "<details class=\"ac\"><summary>FAQ Question?</summary><p>Answer text</p></details>\n",
+        "ToC" to "<details class=\"sp toc\"><summary>Table of Contents</summary><div class=\"aToc\"></div></details>\n",
+        "Steps" to "<ol class=\"steps\"><li>Step 1</li><li>Step 2</li></ol>\n",
+        "Table" to "<div class=\"table bordered stripped\"><table><thead><tr><th>Title</th></tr></thead><tbody><tr><td>Data</td></tr></tbody></table></div>\n"
     )
 
     Row(modifier = Modifier.fillMaxWidth()) {
@@ -628,26 +542,26 @@ private fun OsunhiveUiLayout(
         row4.forEach { (label, code) ->
             TypewriterKey(
                 label = label,
-                modifier = Modifier.weight(1.2f),
+                modifier = Modifier.weight(1.1f),
                 onClick = { onInsertSnippet(code) }
             )
         }
         TypewriterKey(
             label = "SPACE",
             isSpecial = true,
-            modifier = Modifier.weight(1.4f),
+            modifier = Modifier.weight(1.3f),
             onClick = onSpace
         )
         TypewriterKey(
             label = "⌫",
             isSpecial = true,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(0.9f),
             onClick = onBackspace
         )
         TypewriterKey(
             label = "⏎",
             isSpecial = true,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(0.9f),
             onClick = onEnter
         )
     }
