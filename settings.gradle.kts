@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Blogger Keyboard"
+rootProject.name = "Blogger Auto Typer"
 
 include(":app")

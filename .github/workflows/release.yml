@@ -1,0 +1,92 @@
+name: Build & Publish GitHub Release APK
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Release APK (Olajide2004/Olajide-Sherif)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew || true
+
+      - name: Prepare Signing Keystore
+        run: |
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "Decoding release keystore from GitHub Secrets..."
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > my-upload-key.jks
+          elif [ -f "debug.keystore.base64" ]; then
+            echo "Decoding bundled keystore from debug.keystore.base64..."
+            cat debug.keystore.base64 | base64 --decode > my-upload-key.jks
+          else
+            echo "Generating signing keystore for automated release..."
+            keytool -genkey -v -keystore my-upload-key.jks -alias upload -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "${{ secrets.STORE_PASSWORD || 'android' }}" \
+              -keypass "${{ secrets.KEY_PASSWORD || 'android' }}" \
+              -dname "CN=BloggerAutoTyper, OU=AIStudio, O=AIStudio, L=London, S=London, C=GB"
+          fi
+
+      - name: Build Release APK
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/my-upload-key.jks
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD || 'android' }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'android' }}
+        run: |
+          ./gradlew assembleRelease --no-daemon || gradle assembleRelease --no-daemon
+
+      - name: Locate and Stage APK
+        run: |
+          mkdir -p release-artifacts
+          find app/build -name "*.apk" -exec ls -la {} +
+          
+          # Prioritize release APK, fallback to debug APK if needed
+          APK_PATH=$(find app/build -name "*release*.apk" | head -n 1)
+          if [ -z "$APK_PATH" ]; then
+            APK_PATH=$(find app/build -name "*.apk" | head -n 1)
+          fi
+          
+          if [ -n "$APK_PATH" ]; then
+            echo "Found APK at $APK_PATH"
+            cp "$APK_PATH" release-artifacts/BloggerAutoTyper-release.apk
+          else
+            echo "ERROR: No APK found after build!"
+            exit 1
+          fi
+
+      - name: Upload APK to GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'release'
+        with:
+          files: release-artifacts/*.apk
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload APK as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BloggerAutoTyper-release-apk
+          path: release-artifacts/*.apk
+          if-no-files-found: error
