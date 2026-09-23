@@ -7,7 +7,7 @@ data class CustomTypographyClass(
     val description: String,
     val cssRules: String,
     val htmlTemplate: String,
-    val category: String = "Plus UI 3.7.0"
+    val category: String = "OsunHive UI"
 )
 
 object CustomClassPresets {
@@ -59,11 +59,11 @@ object CustomClassPresets {
         CustomTypographyClass(
             id = "custom_author_sig",
             name = "Author Bio & Signature",
-            className = "author-signature-box",
+            className = "custom-author-box",
             category = "Text and Layout",
             description = "Elegantly framed author profile card with bio text",
             cssRules = """
-.author-signature-box {
+.custom-author-box {
     background: #fdfaf3;
     border: 1.5px solid #d4af37;
     border-radius: 10px;
@@ -73,13 +73,13 @@ object CustomClassPresets {
     align-items: center;
     gap: 14px;
 }
-.author-signature-box .bio {
+.custom-author-box .bio {
     font-size: 0.95rem;
     color: #4a5568;
     line-height: 1.6;
 }
             """.trimIndent(),
-            htmlTemplate = """<div class="author-signature-box"><div class="bio"><strong>Author:</strong> {{text}}</div></div>"""
+            htmlTemplate = """<div class="custom-author-box"><div class="bio"><strong>Author:</strong> {{text}}</div></div>"""
         ),
         CustomTypographyClass(
             id = "custom_affiliate_notice",
@@ -105,9 +105,9 @@ object CustomClassPresets {
 
     fun generateFullCombinedCss(customClasses: List<CustomTypographyClass>): String {
         return buildString {
-            append("<style id=\"plus-ui-custom-classes\">\n")
+            append("<style id=\"osunhive-ui-custom-classes\">\n")
             append("/* ==========================================================================\n")
-            append("   Plus UI 3.7.0 Extended Post Formatting Classes for Blogger\n")
+            append("   OsunHive UI Extended Post Formatting Classes for Blogger\n")
             append("   ========================================================================== */\n\n")
             customClasses.forEach { cls ->
                 append("/* Class: ${cls.name} (.${cls.className}) - Category: ${cls.category} */\n")

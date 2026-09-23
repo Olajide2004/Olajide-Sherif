@@ -70,7 +70,7 @@ private const val CHROME_DESKTOP_UA =
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun BloggerWebViewPane(
-    url: String = "https://draft.blogger.com/",
+    url: String = "https://www.osunhive.name.ng",
     postText: String,
     keywordsText: String,
     isAutoTypingActive: Boolean,
@@ -81,13 +81,13 @@ fun BloggerWebViewPane(
     modifier: Modifier = Modifier
 ) {
     var webViewInstance by remember { mutableStateOf<WebView?>(null) }
-    var pageTitle by remember { mutableStateOf("Blogger") }
+    var pageTitle by remember { mutableStateOf("OsunHive") }
     var currentUrl by remember { mutableStateOf(url) }
     var loadingProgress by remember { mutableFloatStateOf(0f) }
     var isDesktopMode by remember { mutableStateOf(false) }
     var canGoBack by remember { mutableStateOf(false) }
     var canGoForward by remember { mutableStateOf(false) }
-    var statusMessage by remember { mutableStateOf("Ready to inject into draft.blogger.com") }
+    var statusMessage by remember { mutableStateOf("Ready to inject into osunhive.name.ng") }
 
     Column(modifier = modifier.fillMaxSize()) {
         // Top Web Action Bar
@@ -129,7 +129,7 @@ fun BloggerWebViewPane(
                             Icon(Icons.Default.Refresh, contentDescription = "Refresh", modifier = Modifier.size(16.dp))
                         }
                         IconButton(
-                            onClick = { webViewInstance?.loadUrl("https://draft.blogger.com/") },
+                            onClick = { webViewInstance?.loadUrl("https://www.osunhive.name.ng") },
                             modifier = Modifier.size(32.dp).testTag("web_btn_home")
                         ) {
                             Icon(Icons.Default.Home, contentDescription = "Home", modifier = Modifier.size(16.dp))
@@ -138,7 +138,7 @@ fun BloggerWebViewPane(
                         Spacer(modifier = Modifier.width(4.dp))
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = pageTitle.ifEmpty { "draft.blogger.com" },
+                                text = pageTitle.ifEmpty { "osunhive.name.ng" },
                                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis

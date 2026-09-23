@@ -35,8 +35,26 @@ object CodeAutoCompleteEngine {
             category = "HTML",
             description = "HTML comment block"
         ),
+        AutoCompleteSuggestion(
+            id = "sug_h2",
+            displayLabel = "<h2> Subheading",
+            prefixMatch = "<h",
+            insertSnippet = "<h2></h2>",
+            caretOffsetFromInsert = 4,
+            category = "HTML",
+            description = "Level 2 HTML Heading"
+        ),
+        AutoCompleteSuggestion(
+            id = "sug_h3",
+            displayLabel = "<h3> Sub-subheading",
+            prefixMatch = "<h",
+            insertSnippet = "<h3></h3>",
+            caretOffsetFromInsert = 4,
+            category = "HTML",
+            description = "Level 3 HTML Heading"
+        ),
 
-        // Plus UI 3.7.0 Video & Media
+        // OsunHive UI Video & Media
         AutoCompleteSuggestion(
             id = "sug_video_yt",
             displayLabel = "videoYt (YouTube 16:9)",
@@ -65,7 +83,7 @@ object CodeAutoCompleteEngine {
             description = "Two images displayed side by side"
         ),
 
-        // Plus UI 3.7.0 Download Box & Safelink
+        // OsunHive UI Download Box & Safelink
         AutoCompleteSuggestion(
             id = "sug_dlbox",
             displayLabel = "dlBox (Download Card)",
@@ -73,7 +91,7 @@ object CodeAutoCompleteEngine {
             insertSnippet = "<div class=\"dlBox\">\n  <div class=\"fT\" data-text=\"ZIP\"></div>\n  <div class=\"fN\">\n    <span>Package.zip</span>\n    <span class=\"fS\">15 MB</span>\n  </div>\n  <a class=\"button safeL\" href=\"DOWNLOAD-URL\" aria-label=\"Download\"><i class=\"icon dl\"></i></a>\n</div>\n",
             caretOffsetFromInsert = 160,
             category = "Download Box",
-            description = "Plus UI file download box with safelink"
+            description = "OsunHive UI file download box with safelink"
         ),
         AutoCompleteSuggestion(
             id = "sug_safelink",
@@ -85,7 +103,7 @@ object CodeAutoCompleteEngine {
             description = "Safelink protected countdown button"
         ),
 
-        // Plus UI 3.7.0 Text and Layout
+        // OsunHive UI Text and Layout
         AutoCompleteSuggestion(
             id = "sug_dropcap",
             displayLabel = "dropCap (Editorial Initial)",
@@ -114,7 +132,7 @@ object CodeAutoCompleteEngine {
             description = "External link styled with arrow icon"
         ),
 
-        // Plus UI 3.7.0 Buttons
+        // OsunHive UI Buttons
         AutoCompleteSuggestion(
             id = "sug_button_solid",
             displayLabel = "button (Solid Button)",
@@ -122,7 +140,7 @@ object CodeAutoCompleteEngine {
             insertSnippet = "<a class=\"button\" href=\"URL\">Get Started</a>",
             caretOffsetFromInsert = 24,
             category = "Buttons",
-            description = "Plus UI primary theme button"
+            description = "OsunHive UI primary theme button"
         ),
         AutoCompleteSuggestion(
             id = "sug_button_outline",
@@ -143,7 +161,7 @@ object CodeAutoCompleteEngine {
             description = "Paired action buttons row"
         ),
 
-        // Plus UI 3.7.0 Alerts & Notes
+        // OsunHive UI Alerts & Notes
         AutoCompleteSuggestion(
             id = "sug_alert_info",
             displayLabel = "alert info (Blue Notice)",
@@ -190,7 +208,7 @@ object CodeAutoCompleteEngine {
             description = "Asterisk icon note"
         ),
 
-        // Plus UI 3.7.0 Code & Highlight
+        // OsunHive UI Code & Highlight
         AutoCompleteSuggestion(
             id = "sug_pre_code",
             displayLabel = "pre code (Dark Code Block)",
@@ -210,7 +228,7 @@ object CodeAutoCompleteEngine {
             description = "Code block showing filename header"
         ),
 
-        // Plus UI 3.7.0 Spoilers & ToC
+        // OsunHive UI Spoilers & ToC
         AutoCompleteSuggestion(
             id = "sug_sp_spoiler",
             displayLabel = "details.sp (Click to Reveal)",
@@ -239,7 +257,7 @@ object CodeAutoCompleteEngine {
             description = "Auto-generated Table of Contents"
         ),
 
-        // Plus UI 3.7.0 Lists
+        // OsunHive UI Lists
         AutoCompleteSuggestion(
             id = "sug_steps",
             displayLabel = "ol.steps (Numbered Steps)",
@@ -259,7 +277,7 @@ object CodeAutoCompleteEngine {
             description = "Plus marker list"
         ),
 
-        // Plus UI 3.7.0 Tables
+        // OsunHive UI Tables
         AutoCompleteSuggestion(
             id = "sug_table_striped",
             displayLabel = "table.bordered.stripped (Styled Table)",
@@ -270,7 +288,7 @@ object CodeAutoCompleteEngine {
             description = "Responsive striped table"
         ),
 
-        // Plus UI 3.7.0 Tabs
+        // OsunHive UI Tabs
         AutoCompleteSuggestion(
             id = "sug_tabs_css",
             displayLabel = "div.tabs (Switchable Radio Tabs)",

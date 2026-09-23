@@ -52,11 +52,11 @@ object BloggerPresets {
     val TEMPLATES = listOf(
         SnippetItem(
             id = "tmpl_plus_ui_post",
-            title = "Plus UI 3.7.0 Complete Article",
+            title = "OsunHive UI Complete Article",
             category = "Templates",
             isHtml = true,
             content = """<h2>Mastering Blogger Post Formatting & Auto-Typing</h2>
-<p class="pIndent"><span class="dropCap">W</span>elcome to the complete tutorial on creating beautiful, responsive Blogspot posts using <strong>Plus UI 3.7.0</strong> shortcodes. Everything in this post uses pure HTML classes, rendering seamlessly without template errors.</p>
+<p class="pIndent"><span class="dropCap">W</span>elcome to the complete tutorial on creating beautiful, responsive Blogspot posts using <strong>OsunHive UI</strong> shortcodes. Everything in this post uses pure HTML classes, rendering seamlessly without template errors.</p>
 
 <div class="videoYt"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe></div>
 
@@ -65,7 +65,7 @@ object BloggerPresets {
 <h2>1. Key Features & Automation Steps</h2>
 <ol class="steps">
   <li>Open Blogger.com and switch your post composer to HTML view.</li>
-  <li>Insert your chosen Plus UI shortcodes (Video, Download Box, Safelink).</li>
+  <li>Insert your chosen OsunHive UI shortcodes (Video, Download Box, Safelink).</li>
   <li>Use <strong>File Auto Batch Paste</strong> or the Typewriter Keyboard to inject content without lag.</li>
 </ol>
 
@@ -96,7 +96,7 @@ object BloggerPresets {
   </table>
 </div>
 
-<details class="sp"><summary>Frequently Asked Questions</summary><p>Plus UI classes work in standard Blogger templates without plugin dependencies.</p></details>"""
+<details class="sp"><summary>Frequently Asked Questions</summary><p>OsunHive UI classes work in standard Blogger templates without plugin dependencies.</p></details>"""
         ),
         SnippetItem(
             id = "tmpl_video_showcase",

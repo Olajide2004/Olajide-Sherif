@@ -10,8 +10,8 @@ import androidx.core.graphics.toColorInt
 
 object BloggerChromeTabHelper {
 
-    private const val DEFAULT_BLOGGER_URL = "https://draft.blogger.com/go/create-post"
-    private const val BLOGGER_HOME_URL = "https://www.blogger.com/"
+    private const val DEFAULT_BLOGGER_URL = "https://www.osunhive.name.ng"
+    private const val BLOGGER_HOME_URL = "https://www.osunhive.name.ng"
 
     fun openBloggerInChromeTab(
         context: Context,

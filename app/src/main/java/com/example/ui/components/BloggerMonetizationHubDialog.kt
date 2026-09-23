@@ -192,7 +192,7 @@ fun BloggerMonetizationHubDialog(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f))
                     ) {
                         Column(modifier = Modifier.padding(14.dp)) {
-                            Text("2. Plus UI Safelink Download Card", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            Text("2. OsunHive UI Safelink Download Card", fontWeight = FontWeight.Bold, fontSize = 14.sp)
                             Text(
                                 "Routes file downloads through automated countdown pages to maximize ad impressions and prevent direct hotlinking.",
                                 fontSize = 12.sp,

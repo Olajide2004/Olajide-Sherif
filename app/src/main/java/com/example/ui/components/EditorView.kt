@@ -1,5 +1,11 @@
 package com.example.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -16,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -24,14 +31,18 @@ import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatItalic
+import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.FormatPaint
 import androidx.compose.material.icons.filled.FormatQuote
+import androidx.compose.material.icons.filled.FormatUnderlined
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Redo
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material.icons.filled.Undo
@@ -47,6 +58,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -68,6 +81,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.engine.AutoCompleteSuggestion
 import com.example.engine.CodeAutoCompleteEngine
+import com.example.model.AutosaveState
 import com.example.model.CustomTypographyClass
 import com.example.model.LoadedFileInfo
 import com.example.ui.theme.SignalGold
@@ -86,9 +100,13 @@ fun EditorView(
     loadedFileInfo: LoadedFileInfo?,
     onOpenOsunhiveUi: () -> Unit = {},
     onOpenFileAutoTypeAndBatchPaste: () -> Unit = {},
+    onOpenFilePickerToCode: () -> Unit = {},
+    autosaveState: AutosaveState = AutosaveState.Idle,
+    onSaveDraftNow: () -> Unit = {},
     customClasses: List<CustomTypographyClass> = emptyList(),
     onApplyAutoComplete: (AutoCompleteSuggestion) -> Unit = {},
     onApplyFormattingTag: (String, String) -> Unit = { _, _ -> },
+    onApplyFloatingFormatting: (String) -> Unit = {},
     onOpenCustomClasses: () -> Unit = {},
     onOpenDocumentFormatter: () -> Unit = {},
     onOpenMonetizationHub: () -> Unit = {},
@@ -98,6 +116,7 @@ fun EditorView(
     var editorFontSize by remember { mutableFloatStateOf(14f) }
     var showLineNumbers by remember { mutableStateOf(true) }
     var showSearchReplace by remember { mutableStateOf(false) }
+    var showFloatingToolbar by remember { mutableStateOf(true) }
     var searchQuery by remember { mutableStateOf("") }
     var replaceQuery by remember { mutableStateOf("") }
 
@@ -126,7 +145,7 @@ fun EditorView(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Top Control Bar: Title, File info & Primary Actions
+            // Top Control Bar: Title, Autosave status, File info & Primary Actions
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -144,13 +163,69 @@ fun EditorView(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "Blogger Code Workbench",
+                        text = "OsunHive Code Workbench",
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    // Autosave Status Badge
+                    Surface(
+                        onClick = onSaveDraftNow,
+                        shape = RoundedCornerShape(10.dp),
+                        color = when (autosaveState) {
+                            is AutosaveState.Saving -> Color(0xFF3B2D0A)
+                            is AutosaveState.Saved -> Color(0xFF10281E)
+                            else -> MaterialTheme.colorScheme.surface
+                        },
+                        border = BorderStroke(
+                            1.dp,
+                            when (autosaveState) {
+                                is AutosaveState.Saving -> SignalGold.copy(alpha = 0.7f)
+                                is AutosaveState.Saved -> Color(0xFF22C55E).copy(alpha = 0.5f)
+                                else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                            }
+                        ),
+                        modifier = Modifier.testTag("badge_autosave")
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .background(
+                                        when (autosaveState) {
+                                            is AutosaveState.Saving -> SignalGold
+                                            is AutosaveState.Saved -> Color(0xFF22C55E)
+                                            else -> MaterialTheme.colorScheme.outline
+                                        },
+                                        shape = CircleShape
+                                    )
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = when (autosaveState) {
+                                    is AutosaveState.Saving -> "Saving..."
+                                    is AutosaveState.Saved -> "Autosaved"
+                                    else -> "Autosave ON"
+                                },
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = when (autosaveState) {
+                                    is AutosaveState.Saving -> SignalGold
+                                    is AutosaveState.Saved -> Color(0xFF4ADE80)
+                                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "${wordCount}w • ${charCount}c • ${lineCount}L",
                         fontSize = 11.sp,
@@ -224,7 +299,7 @@ fun EditorView(
                 }
             }
 
-            // Quick Tools Bar: Auto-Typing & Plus UI 3.7.0 Buttons
+            // Quick Tools Bar: Auto-Typing, File Picker to Code & OsunHive UI Buttons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -234,6 +309,17 @@ fun EditorView(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
+                // Direct File Picker to Code
+                FilterChip(
+                    selected = false,
+                    onClick = onOpenFilePickerToCode,
+                    label = { Text("📂 Open File to Code", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                    leadingIcon = { Icon(Icons.Default.FileOpen, contentDescription = null, modifier = Modifier.size(14.dp)) },
+                    colors = FilterChipDefaults.filterChipColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    )
+                )
+
                 // File to Auto-Typing & Batch Paste Trigger
                 FilterChip(
                     selected = true,
@@ -246,11 +332,11 @@ fun EditorView(
                     )
                 )
 
-                // Plus UI 3.7.0 Classes Dialog Trigger
+                // OsunHive UI Classes Dialog Trigger
                 FilterChip(
                     selected = false,
-                    onClick = onOpenOsunhiveUi, // mapped to PlusUiTypographyDialog
-                    label = { Text("Plus UI 3.7.0", fontSize = 11.sp, fontWeight = FontWeight.SemiBold) },
+                    onClick = onOpenOsunhiveUi,
+                    label = { Text("OsunHive UI", fontSize = 11.sp, fontWeight = FontWeight.SemiBold) },
                     leadingIcon = { Icon(Icons.Default.FormatPaint, contentDescription = null, modifier = Modifier.size(14.dp)) },
                     colors = FilterChipDefaults.filterChipColors(
                         containerColor = MaterialTheme.colorScheme.surface
@@ -511,74 +597,231 @@ fun EditorView(
 
             HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
 
-            // Main Code Editor (100% Focused, Zero-Preview Overhead)
-            Row(
+            // Main Code Editor Area with Floating Formatting Toolbar
+            Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .background(Color(0xFF121918)) // Workbench Dark Paper Palette
-                    .padding(horizontal = 6.dp, vertical = 6.dp)
             ) {
-                // Line Numbers Gutter
-                if (showLineNumbers) {
-                    val numbersString = remember(lineCount) { (1..lineCount.coerceAtLeast(1)).joinToString("\n") }
-                    Box(
+                // Line Numbers Gutter + Monospace Code Editor
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(0xFF121918)) // Workbench Dark Paper Palette
+                        .padding(horizontal = 6.dp, vertical = 6.dp)
+                ) {
+                    if (showLineNumbers) {
+                        val numbersString = remember(lineCount) { (1..lineCount.coerceAtLeast(1)).joinToString("\n") }
+                        Box(
+                            modifier = Modifier
+                                .width(32.dp)
+                                .fillMaxHeight()
+                                .padding(end = 6.dp)
+                        ) {
+                            Text(
+                                text = numbersString,
+                                color = Color(0xFF5A6B6A),
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = editorFontSize.sp,
+                                lineHeight = (editorFontSize * 1.55f).sp,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .width(1.dp)
+                                .fillMaxHeight()
+                                .background(Color(0xFF23302E))
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                    }
+
+                    BasicTextField(
+                        value = textFieldValue,
+                        onValueChange = onValueChange,
                         modifier = Modifier
-                            .width(32.dp)
+                            .weight(1f)
                             .fillMaxHeight()
-                            .padding(end = 6.dp)
-                    ) {
-                        Text(
-                            text = numbersString,
-                            color = Color(0xFF5A6B6A),
+                            .testTag("main_code_editor_field"),
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(
+                            color = Color(0xFFE8ECEB),
                             fontFamily = FontFamily.Monospace,
                             fontSize = editorFontSize.sp,
                             lineHeight = (editorFontSize * 1.55f).sp,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .width(1.dp)
-                            .fillMaxHeight()
-                            .background(Color(0xFF23302E))
+                            letterSpacing = 0.2.sp
+                        ),
+                        cursorBrush = SolidColor(SignalGold),
+                        decorationBox = { innerTextField ->
+                            if (textFieldValue.text.isEmpty()) {
+                                Text(
+                                    text = "OsunHive Code Workbench ready.\nUse OsunHive UI buttons above or Typewriter Keyboard to compose post HTML...",
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        color = Color(0xFF5E6E6D),
+                                        fontFamily = FontFamily.Monospace,
+                                        fontSize = editorFontSize.sp,
+                                        lineHeight = (editorFontSize * 1.55f).sp
+                                    )
+                                )
+                            }
+                            innerTextField()
+                        }
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
                 }
 
-                // Monospace Code TextField
-                BasicTextField(
-                    value = textFieldValue,
-                    onValueChange = onValueChange,
+                // Floating Formatting Toolbar (Bold, Italic, Bullets, Numbers, Underline, H2, Code, Link, Save)
+                Column(
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .testTag("main_code_editor_field"),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(
-                        color = Color(0xFFE8ECEB),
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = editorFontSize.sp,
-                        lineHeight = (editorFontSize * 1.55f).sp,
-                        letterSpacing = 0.2.sp
-                    ),
-                    cursorBrush = SolidColor(SignalGold),
-                    decorationBox = { innerTextField ->
-                        if (textFieldValue.text.isEmpty()) {
-                            Text(
-                                text = "Blogger Code Workbench ready.\nUse Plus UI 3.7.0 buttons above or Typewriter Keyboard to compose post HTML...",
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    color = Color(0xFF5E6E6D),
-                                    fontFamily = FontFamily.Monospace,
-                                    fontSize = editorFontSize.sp,
-                                    lineHeight = (editorFontSize * 1.55f).sp
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AnimatedVisibility(
+                        visible = showFloatingToolbar,
+                        enter = fadeIn() + slideInVertically { it / 2 },
+                        exit = fadeOut() + slideOutVertically { it / 2 }
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(22.dp),
+                            color = Color(0xF2162220),
+                            tonalElevation = 8.dp,
+                            shadowElevation = 8.dp,
+                            border = BorderStroke(1.dp, SignalGold.copy(alpha = 0.5f)),
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp)
+                                .testTag("floating_formatting_toolbar")
+                        ) {
+                        Row(
+                            modifier = Modifier
+                                .horizontalScroll(rememberScrollState())
+                                .padding(horizontal = 8.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            // Formatting handle badge
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .background(SignalGold.copy(alpha = 0.2f), RoundedCornerShape(12.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    Icons.Default.FormatPaint,
+                                    contentDescription = null,
+                                    tint = SignalGold,
+                                    modifier = Modifier.size(13.dp)
                                 )
-                            )
+                            }
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            // Bold Action
+                            IconButton(
+                                onClick = { onApplyFloatingFormatting("bold") },
+                                modifier = Modifier.size(32.dp).testTag("floating_btn_bold")
+                            ) {
+                                Icon(Icons.Default.FormatBold, contentDescription = "Bold (<b>)", tint = Color.White, modifier = Modifier.size(18.dp))
+                            }
+
+                            // Italic Action
+                            IconButton(
+                                onClick = { onApplyFloatingFormatting("italic") },
+                                modifier = Modifier.size(32.dp).testTag("floating_btn_italic")
+                            ) {
+                                Icon(Icons.Default.FormatItalic, contentDescription = "Italic (<i>)", tint = Color.White, modifier = Modifier.size(18.dp))
+                            }
+
+                            // Bullet Points Action
+                            IconButton(
+                                onClick = { onApplyFloatingFormatting("bullet") },
+                                modifier = Modifier.size(32.dp).testTag("floating_btn_bullets")
+                            ) {
+                                Icon(Icons.Default.FormatListBulleted, contentDescription = "Bullet Points (<ul>)", tint = SignalGold, modifier = Modifier.size(18.dp))
+                            }
+
+                            // Numbered List Action
+                            IconButton(
+                                onClick = { onApplyFloatingFormatting("numbered") },
+                                modifier = Modifier.size(32.dp).testTag("floating_btn_numbered")
+                            ) {
+                                Text("1.", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = Color.White, fontFamily = FontFamily.Monospace)
+                            }
+
+                            // Underline Action
+                            IconButton(
+                                onClick = { onApplyFloatingFormatting("underline") },
+                                modifier = Modifier.size(32.dp).testTag("floating_btn_underline")
+                            ) {
+                                Icon(Icons.Default.FormatUnderlined, contentDescription = "Underline (<u>)", tint = Color.White, modifier = Modifier.size(18.dp))
+                            }
+
+                            // Heading 2 Action
+                            IconButton(
+                                onClick = { onApplyFloatingFormatting("h2") },
+                                modifier = Modifier.size(32.dp).testTag("floating_btn_h2")
+                            ) {
+                                Text("H2", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = SignalGold)
+                            }
+
+                            // Code Action
+                            IconButton(
+                                onClick = { onApplyFloatingFormatting("code") },
+                                modifier = Modifier.size(32.dp).testTag("floating_btn_code")
+                            ) {
+                                Icon(Icons.Default.Code, contentDescription = "Code (<code>)", tint = Color.White, modifier = Modifier.size(16.dp))
+                            }
+
+                            // Link Action
+                            IconButton(
+                                onClick = { onApplyFloatingFormatting("link") },
+                                modifier = Modifier.size(32.dp).testTag("floating_btn_link")
+                            ) {
+                                Text("Link", fontWeight = FontWeight.SemiBold, fontSize = 11.sp, color = SignalGold)
+                            }
+
+                            // Instant Save Draft Action
+                            IconButton(
+                                onClick = onSaveDraftNow,
+                                modifier = Modifier.size(32.dp).testTag("floating_btn_save_draft")
+                            ) {
+                                Icon(Icons.Default.Save, contentDescription = "Save Draft", tint = Color(0xFF4ADE80), modifier = Modifier.size(16.dp))
+                            }
+
+                            // Minimize/Hide Floating Toolbar
+                            IconButton(
+                                onClick = { showFloatingToolbar = false },
+                                modifier = Modifier.size(28.dp).testTag("floating_btn_hide")
+                            ) {
+                                Icon(Icons.Default.Close, contentDescription = "Hide Toolbar", tint = Color.LightGray, modifier = Modifier.size(14.dp))
+                            }
                         }
-                        innerTextField()
                     }
-                )
+                }
+            }
+
+            // Small pill to restore floating toolbar if hidden
+            if (!showFloatingToolbar) {
+                SmallFloatingActionButton(
+                        onClick = { showFloatingToolbar = true },
+                        containerColor = SignalGold,
+                        contentColor = Color(0xFF1C2B2A),
+                        shape = RoundedCornerShape(14.dp),
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(12.dp)
+                            .testTag("floating_btn_restore")
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(Icons.Default.FormatPaint, contentDescription = null, modifier = Modifier.size(14.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Format", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
             }
         }
     }
 }
+

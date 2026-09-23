@@ -139,6 +139,7 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
     val lastKeywords by viewModel.lastKeywords.collectAsState()
     val isWebAutoTyping by viewModel.isWebAutoTyping.collectAsState()
     val customClasses by viewModel.customClasses.collectAsState()
+    val autosaveState by viewModel.autosaveState.collectAsState()
 
     // Typer engine telemetry
     val autoTypeState by viewModel.autoTyperEngine.state.collectAsState()
@@ -200,14 +201,14 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             Text(
-                                text = "Blogger Auto Typer",
+                                text = "OsunHive Code & Typer",
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontFamily = FontFamily.Serif,
                                     fontWeight = FontWeight.Bold
                                 )
                             )
                             Text(
-                                text = if (appMode == AppMode.BLOGGER_LIVE) "draft.blogger.com Direct Injection" else "Plus UI 3.7.0 Code Workbench",
+                                text = if (appMode == AppMode.BLOGGER_LIVE) "osunhive.name.ng Live Studio" else "OsunHive UI Code Workbench",
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     fontSize = 10.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -227,7 +228,7 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
                         onClick = { showPlusUiDialog = true },
                         modifier = Modifier.testTag("action_plus_ui_shortcodes")
                     ) {
-                        Icon(Icons.Default.FormatPaint, contentDescription = "Plus UI 3.7.0 Shortcodes", tint = SignalGold)
+                        Icon(Icons.Default.FormatPaint, contentDescription = "OsunHive UI Shortcodes", tint = SignalGold)
                     }
                     IconButton(
                         onClick = { showDocFormatterDialog = true },
@@ -266,10 +267,10 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
                         Icon(Icons.Default.ContentCopy, contentDescription = "Blogger Batch Copy")
                     }
                     IconButton(
-                        onClick = { viewModel.openBloggerInChromeTab() },
+                        onClick = { viewModel.openBloggerInChromeTab("https://www.osunhive.name.ng") },
                         modifier = Modifier.testTag("action_open_blogger")
                     ) {
-                        Icon(Icons.Default.OpenInBrowser, contentDescription = "Open draft.blogger.com in Chrome Tab", tint = SignalGold)
+                        Icon(Icons.Default.OpenInBrowser, contentDescription = "Open osunhive.name.ng in Chrome Tab", tint = SignalGold)
                     }
                     IconButton(
                         onClick = { viewModel.sharePostContent() },
@@ -327,7 +328,7 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Default.Language, contentDescription = null, modifier = Modifier.size(14.dp), tint = SignalGold)
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("draft.blogger.com", fontWeight = if (appMode == AppMode.BLOGGER_LIVE) FontWeight.Bold else FontWeight.Normal, fontSize = 12.sp)
+                            Text("osunhive.name.ng", fontWeight = if (appMode == AppMode.BLOGGER_LIVE) FontWeight.Bold else FontWeight.Normal, fontSize = 12.sp)
                         }
                     },
                     modifier = Modifier.testTag("tab_blogger_live")
@@ -370,6 +371,9 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
                     onRedo = { viewModel.redo() },
                     onInjectKeywordsClick = { showFileAutoTypeBatchDialog = true },
                     onOpenFileAutoTypeAndBatchPaste = { showFileAutoTypeBatchDialog = true },
+                    onOpenFilePickerToCode = { filePickerLauncher.launch(arrayOf("*/*")) },
+                    autosaveState = autosaveState,
+                    onSaveDraftNow = { viewModel.saveDraftNow() },
                     onClearClick = { viewModel.clearEditor() },
                     onCopyAllClick = { viewModel.copyToClipboard(editorValue.text) },
                     loadedFileInfo = loadedFileInfo,
@@ -377,10 +381,11 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
                     customClasses = customClasses,
                     onApplyAutoComplete = { viewModel.applyAutoCompleteSuggestion(it) },
                     onApplyFormattingTag = { tag, attr -> viewModel.applyFormattingTag(tag, attr) },
+                    onApplyFloatingFormatting = { action -> viewModel.applyFloatingFormatting(action) },
                     onOpenCustomClasses = { showCustomClassDialog = true },
                     onOpenDocumentFormatter = { showDocFormatterDialog = true },
                     onOpenMonetizationHub = { showMonetizationDialog = true },
-                    onOpenChromeTab = { viewModel.openBloggerInChromeTab() },
+                    onOpenChromeTab = { viewModel.openBloggerInChromeTab("https://www.osunhive.name.ng") },
                     modifier = Modifier
                         .weight(1f)
                         .padding(bottom = 6.dp)
@@ -388,7 +393,7 @@ fun BloggerAutoTyperApp(viewModel: MainViewModel) {
             } else {
                 // Live Blogger.com in-app browser with direct auto-typing and injection
                 BloggerWebViewPane(
-                    url = "https://draft.blogger.com/",
+                    url = "https://www.osunhive.name.ng",
                     postText = editorValue.text,
                     keywordsText = lastKeywords,
                     isAutoTypingActive = isWebAutoTyping,

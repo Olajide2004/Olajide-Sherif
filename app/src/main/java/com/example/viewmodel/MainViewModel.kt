@@ -352,37 +352,56 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadFileFromUri(uri: Uri) {
-        viewModelScope.launch {
+        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             try {
-                var fileName = "Document"
-                context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-                    if (nameIndex != -1 && cursor.moveToFirst()) {
-                        fileName = cursor.getString(nameIndex)
+                try {
+                    context.contentResolver.takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (_: Exception) {}
+
+                var fileName = "Document.html"
+                try {
+                    context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                        val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                        if (nameIndex != -1 && cursor.moveToFirst()) {
+                            val resolvedName = cursor.getString(nameIndex)
+                            if (!resolvedName.isNullOrBlank()) {
+                                fileName = resolvedName
+                            }
+                        }
                     }
+                } catch (_: Exception) {
+                    fileName = uri.lastPathSegment?.substringAfterLast('/') ?: "Document.html"
                 }
 
                 val content = context.contentResolver.openInputStream(uri)?.use { stream ->
-                    BufferedReader(InputStreamReader(stream)).readText()
+                    BufferedReader(InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8)).readText()
                 } ?: ""
 
-                if (content.isNotEmpty()) {
-                    pushUndo(_editorValue.value)
-                    _editorValue.value = TextFieldValue(content, TextRange(content.length))
-                    val ext = fileName.substringAfterLast('.', "TXT").uppercase()
-                    _loadedFileInfo.value = LoadedFileInfo(
-                        name = fileName,
-                        type = ext,
-                        characterCount = content.length,
-                        lineCount = content.count { it == '\n' } + 1
-                    )
-                    autoTyperEngine.setSourceText(content, startFromBeginning = true)
-                    Toast.makeText(context, "Loaded $fileName (${content.length} chars)", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "File is empty", Toast.LENGTH_SHORT).show()
+                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    if (content.isNotEmpty()) {
+                        pushUndo(_editorValue.value)
+                        _editorValue.value = TextFieldValue(content, TextRange(0))
+                        val ext = fileName.substringAfterLast('.', "CODE").uppercase()
+                        _loadedFileInfo.value = LoadedFileInfo(
+                            name = fileName,
+                            type = ext,
+                            characterCount = content.length,
+                            lineCount = content.count { it == '\n' } + 1
+                        )
+                        autoTyperEngine.setSourceText(content, startFromBeginning = true)
+                        draftAutosaveManager.onContentChanged(content, title = fileName)
+                        Toast.makeText(context, "Loaded $fileName (${content.length} chars)", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Selected file is empty", Toast.LENGTH_SHORT).show()
+                    }
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "Failed to read file: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    Toast.makeText(context, "Failed to read file: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
@@ -523,11 +542,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun openBloggerDraft() {
-        openBloggerInChromeTab()
+        openBloggerInChromeTab("https://www.osunhive.name.ng")
     }
 
-    fun openBloggerInChromeTab(url: String = "https://draft.blogger.com/go/create-post") {
+    fun openBloggerInChromeTab(url: String = "https://www.osunhive.name.ng") {
         BloggerChromeTabHelper.openBloggerInChromeTab(context, url)
+    }
+
+    fun saveDraftNow(title: String? = null) {
+        val current = _editorValue.value.text
+        if (current.isBlank()) {
+            Toast.makeText(context, "Cannot save empty draft", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val postTitle = title ?: _loadedFileInfo.value?.name ?: "OsunHive Draft"
+        draftAutosaveManager.saveDraftNow(current, title = postTitle, isAutoSave = false)
+        Toast.makeText(context, "Saved draft snapshot: $postTitle", Toast.LENGTH_SHORT).show()
     }
 
     fun addCustomClass(customClass: CustomTypographyClass) {
@@ -555,6 +585,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val newPos = start + html.length
         _editorValue.value = TextFieldValue(updated, TextRange(newPos))
         autoTyperEngine.setSourceText(updated, startFromBeginning = false)
+        draftAutosaveManager.onContentChanged(updated)
     }
 
     fun applyAutoCompleteSuggestion(suggestion: AutoCompleteSuggestion) {
@@ -563,6 +594,50 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val result = CodeAutoCompleteEngine.applySuggestion(current, suggestion)
         _editorValue.value = result
         autoTyperEngine.setSourceText(result.text, startFromBeginning = false)
+        draftAutosaveManager.onContentChanged(result.text)
+    }
+
+    fun applyFloatingFormatting(action: String) {
+        val current = _editorValue.value
+        val text = current.text
+        val start = current.selection.min
+        val end = current.selection.max
+        pushUndo(current)
+
+        val selectedText = if (start != end) text.substring(start, end) else ""
+        val replacement = when (action.lowercase()) {
+            "bold" -> if (selectedText.isNotEmpty()) "<b>$selectedText</b>" else "<b>bold text</b>"
+            "italic" -> if (selectedText.isNotEmpty()) "<i>$selectedText</i>" else "<i>italic text</i>"
+            "underline" -> if (selectedText.isNotEmpty()) "<u>$selectedText</u>" else "<u>underlined text</u>"
+            "bullet", "bullet_points", "bullets" -> {
+                if (selectedText.isNotBlank()) {
+                    val lines = selectedText.lines()
+                    "<ul>\n" + lines.joinToString("\n") { "  <li>${it.trim()}</li>" } + "\n</ul>\n"
+                } else {
+                    "<ul>\n  <li>Bullet point 1</li>\n  <li>Bullet point 2</li>\n  <li>Bullet point 3</li>\n</ul>\n"
+                }
+            }
+            "numbered", "ordered" -> {
+                if (selectedText.isNotBlank()) {
+                    val lines = selectedText.lines()
+                    "<ol>\n" + lines.joinToString("\n") { "  <li>${it.trim()}</li>" } + "\n</ol>\n"
+                } else {
+                    "<ol>\n  <li>First step</li>\n  <li>Second step</li>\n</ol>\n"
+                }
+            }
+            "h2" -> if (selectedText.isNotEmpty()) "<h2>$selectedText</h2>\n" else "<h2>Heading 2</h2>\n"
+            "h3" -> if (selectedText.isNotEmpty()) "<h3>$selectedText</h3>\n" else "<h3>Heading 3</h3>\n"
+            "quote" -> if (selectedText.isNotEmpty()) "<blockquote class=\"s1\"><p>$selectedText</p></blockquote>\n" else "<blockquote class=\"s1\"><p>Quoted text</p></blockquote>\n"
+            "code" -> if (selectedText.isNotEmpty()) "<code>$selectedText</code>" else "<code>code</code>"
+            "link" -> if (selectedText.isNotEmpty()) "<a href=\"https://www.osunhive.name.ng\">$selectedText</a>" else "<a href=\"https://www.osunhive.name.ng\">Link</a>"
+            else -> selectedText
+        }
+
+        val updated = text.substring(0, start) + replacement + text.substring(end)
+        val newPos = start + replacement.length
+        _editorValue.value = TextFieldValue(updated, TextRange(newPos))
+        autoTyperEngine.setSourceText(updated, startFromBeginning = false)
+        draftAutosaveManager.onContentChanged(updated)
     }
 
     fun applyFormattingTag(tag: String, attributes: String = "") {
@@ -584,6 +659,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val newPos = start + replacement.length
         _editorValue.value = TextFieldValue(updated, TextRange(newPos))
         autoTyperEngine.setSourceText(updated, startFromBeginning = false)
+        draftAutosaveManager.onContentChanged(updated)
     }
 
     fun convertAndLoadDocument(uri: Uri) {
@@ -604,6 +680,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         lineCount = html.count { it == '\n' } + 1
                     )
                     autoTyperEngine.setSourceText(html, startFromBeginning = true)
+                    draftAutosaveManager.onContentChanged(html, title = name)
                     Toast.makeText(context, "Converted $name to OsunHive HTML (${html.length} chars)", Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(context, "Document was empty", Toast.LENGTH_SHORT).show()
@@ -616,14 +693,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun openBloggerInChrome() {
         try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://draft.blogger.com/")).apply {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.osunhive.name.ng")).apply {
                 setPackage("com.android.chrome")
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             context.startActivity(intent)
         } catch (_: Exception) {
             try {
-                val fallback = Intent(Intent.ACTION_VIEW, Uri.parse("https://draft.blogger.com/")).apply {
+                val fallback = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.osunhive.name.ng")).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
                 context.startActivity(fallback)

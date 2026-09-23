@@ -112,7 +112,7 @@ fun TypewriterKeyboard(
             FilterChip(
                 selected = currentLayout == KeyboardLayout.PLUS_UI,
                 onClick = { onLayoutChange(KeyboardLayout.PLUS_UI) },
-                label = { Text("Plus UI 3.7.0", fontSize = 11.sp, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold) },
+                label = { Text("OsunHive UI", fontSize = 11.sp, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold) },
                 leadingIcon = { Icon(Icons.Default.FormatPaint, contentDescription = null, modifier = Modifier.size(14.dp)) },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = SignalGold,
@@ -481,7 +481,7 @@ private fun PlusUiKeyboardLayout(
         "pIndent" to "<p class=\"pIndent\">Paragraph text here.</p>\n"
     )
 
-    // Row 2: Plus UI Alert & Note Callouts
+    // Row 2: OsunHive UI Alert & Note Callouts
     val row2 = listOf(
         "Alert Info" to "<div class=\"alert info\"><strong>Info</strong> Information text here.</div>\n",
         "Alert Success" to "<div class=\"alert success\"><strong>Success</strong> Action succeeded.</div>\n",
@@ -490,7 +490,7 @@ private fun PlusUiKeyboardLayout(
         "Note" to "<p class=\"note\">Editorial note.</p>\n"
     )
 
-    // Row 3: Plus UI Buttons & Code
+    // Row 3: OsunHive UI Buttons & Code
     val row3 = listOf(
         "Button" to "<a class=\"button\" href=\"URL\">Link</a>",
         "Outline" to "<a class=\"button ln\" href=\"URL\">Link</a>",

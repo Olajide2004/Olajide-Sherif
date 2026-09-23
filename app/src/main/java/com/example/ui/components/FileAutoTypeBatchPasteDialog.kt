@@ -69,6 +69,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import android.provider.OpenableColumns
 import com.example.model.AutoTypeConfig
 import com.example.model.AutoTypeState
 import com.example.ui.theme.SignalGold
@@ -111,15 +112,30 @@ fun FileAutoTypeBatchPasteDialog(
     }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+        contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         uri?.let {
             try {
+                try {
+                    context.contentResolver.takePersistableUriPermission(
+                        it,
+                        android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (_: Exception) {}
+
+                var resolvedName = "imported_file.txt"
+                context.contentResolver.query(it, null, null, null, null)?.use { cursor ->
+                    val nameIdx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (nameIdx != -1 && cursor.moveToFirst()) {
+                        resolvedName = cursor.getString(nameIdx) ?: resolvedName
+                    }
+                }
+
                 context.contentResolver.openInputStream(it)?.use { stream ->
-                    val reader = BufferedReader(InputStreamReader(stream))
+                    val reader = BufferedReader(InputStreamReader(stream, Charsets.UTF_8))
                     val content = reader.readText()
                     fileContent = content
-                    loadedFileName = uri.lastPathSegment?.substringAfterLast('/') ?: "imported_file.txt"
+                    loadedFileName = resolvedName
                     currentBatchIndex = 0
                     Toast.makeText(context, "Loaded $loadedFileName (${content.length} chars)", Toast.LENGTH_SHORT).show()
                 }
@@ -206,14 +222,31 @@ fun FileAutoTypeBatchPasteDialog(
                             )
                         }
 
-                        Button(
-                            onClick = { filePickerLauncher.launch("*/*") },
-                            colors = ButtonDefaults.buttonColors(containerColor = SignalGold, contentColor = Color(0xFF1C2B2A)),
-                            modifier = Modifier.height(34.dp)
-                        ) {
-                            Icon(Icons.Default.FileOpen, contentDescription = null, modifier = Modifier.size(14.dp))
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Open File", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            OutlinedButton(
+                                onClick = {
+                                    if (fileContent.isNotEmpty()) {
+                                        onBatchPasteToEditor(fileContent)
+                                        Toast.makeText(context, "Loaded into editor workbench", Toast.LENGTH_SHORT).show()
+                                        onDismiss()
+                                    }
+                                },
+                                modifier = Modifier.height(34.dp)
+                            ) {
+                                Text("To Editor", fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            }
+
+                            Spacer(modifier = Modifier.width(6.dp))
+
+                            Button(
+                                onClick = { filePickerLauncher.launch(arrayOf("*/*")) },
+                                colors = ButtonDefaults.buttonColors(containerColor = SignalGold, contentColor = Color(0xFF1C2B2A)),
+                                modifier = Modifier.height(34.dp)
+                            ) {
+                                Icon(Icons.Default.FileOpen, contentDescription = null, modifier = Modifier.size(14.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Open File", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                            }
                         }
                     }
                 }

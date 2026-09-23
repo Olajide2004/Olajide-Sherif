@@ -634,7 +634,7 @@ console.log("Hello Blogger");</code></pre>"""
     </thead>
     <tbody>
       <tr><td>Blogger Auto Typer</td><td>1.0.0</td><td>24 MB</td></tr>
-      <tr><td>Plus UI Theme</td><td>3.7.0</td><td>1.2 MB</td></tr>
+      <tr><td>OsunHive UI Theme</td><td>OsunHive UI</td><td>1.2 MB</td></tr>
     </tbody>
   </table>
 </div>"""
@@ -805,7 +805,7 @@ console.log("Hello Blogger");</code></pre>"""
             category = CAT_QUICK_COPY,
             description = "Starter template containing headings, video, download box, and safelink",
             htmlCode = """<h2>Introduction</h2>
-<p class="pIndent"><span class="dropCap">W</span>elcome to today's complete guide. Everything here is formatted with clean Plus UI 3.7.0 classes for maximum readability.</p>
+<p class="pIndent"><span class="dropCap">W</span>elcome to today's complete guide. Everything here is formatted with clean OsunHive UI classes for maximum readability.</p>
 
 <div class="videoYt"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe></div>
 

@@ -108,14 +108,14 @@ fun PlusUiTypographyDialog(
                         Spacer(modifier = Modifier.width(8.dp))
                         Column {
                             Text(
-                                text = "Plus UI 3.7.0 Shortcodes",
+                                text = "OsunHive UI Shortcodes",
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                             )
                             Text(
-                                text = "Plain HTML + CSS post formatting reference",
+                                text = "OsunHive UI & Blogger typography & post components",
                                 style = MaterialTheme.typography.bodySmall.copy(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.65f),
                                     fontSize = 11.sp
@@ -186,7 +186,7 @@ fun PlusUiTypographyDialog(
                             },
                             onCopy = {
                                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                val clip = ClipData.newPlainText("Plus UI Shortcode", snippet.htmlCode)
+                                val clip = ClipData.newPlainText("OsunHive UI Shortcode", snippet.htmlCode)
                                 clipboard.setPrimaryClip(clip)
                                 Toast.makeText(context, "Copied snippet HTML", Toast.LENGTH_SHORT).show()
                             }
