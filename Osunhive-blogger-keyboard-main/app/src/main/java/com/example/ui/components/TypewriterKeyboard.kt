@@ -1,0 +1,654 @@
+package com.example.ui.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.FormatPaint
+import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.filled.Numbers
+import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.model.KeyboardLayout
+import com.example.model.OsunhiveUiTypography
+import com.example.ui.theme.SignalGold
+
+@Composable
+fun TypewriterKeyboard(
+    activeChar: Char?,
+    currentLayout: KeyboardLayout,
+    onLayoutChange: (KeyboardLayout) -> Unit,
+    onKeyPress: (String) -> Unit,
+    onBackspace: () -> Unit,
+    onEnter: () -> Unit,
+    onSpace: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var isShifted by remember { mutableStateOf(false) }
+    var isCapsLock by remember { mutableStateOf(false) }
+
+    val activeCharString = activeChar?.toString()
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+            )
+            .padding(horizontal = 6.dp, vertical = 6.dp)
+    ) {
+        // Layout selector strip
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(bottom = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FilterChip(
+                selected = currentLayout == KeyboardLayout.QWERTY,
+                onClick = { onLayoutChange(KeyboardLayout.QWERTY) },
+                label = { Text("QWERTY", fontSize = 11.sp, fontFamily = FontFamily.Monospace) },
+                leadingIcon = { Icon(Icons.Default.Keyboard, contentDescription = null, modifier = Modifier.size(14.dp)) },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = SignalGold,
+                    selectedLabelColor = Color(0xFF1C2B2A)
+                )
+            )
+            FilterChip(
+                selected = currentLayout == KeyboardLayout.SYMBOLS,
+                onClick = { onLayoutChange(KeyboardLayout.SYMBOLS) },
+                label = { Text("123 & Sym", fontSize = 11.sp, fontFamily = FontFamily.Monospace) },
+                leadingIcon = { Icon(Icons.Default.Numbers, contentDescription = null, modifier = Modifier.size(14.dp)) },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = SignalGold,
+                    selectedLabelColor = Color(0xFF1C2B2A)
+                )
+            )
+            FilterChip(
+                selected = currentLayout == KeyboardLayout.BLOGGER_TAGS,
+                onClick = { onLayoutChange(KeyboardLayout.BLOGGER_TAGS) },
+                label = { Text("Blogger HTML", fontSize = 11.sp, fontFamily = FontFamily.Monospace) },
+                leadingIcon = { Icon(Icons.Default.Code, contentDescription = null, modifier = Modifier.size(14.dp)) },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = SignalGold,
+                    selectedLabelColor = Color(0xFF1C2B2A)
+                )
+            )
+            FilterChip(
+                selected = currentLayout == KeyboardLayout.KEYWORDS,
+                onClick = { onLayoutChange(KeyboardLayout.KEYWORDS) },
+                label = { Text("Keywords", fontSize = 11.sp, fontFamily = FontFamily.Monospace) },
+                leadingIcon = { Icon(Icons.Default.Tag, contentDescription = null, modifier = Modifier.size(14.dp)) },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = SignalGold,
+                    selectedLabelColor = Color(0xFF1C2B2A)
+                )
+            )
+            FilterChip(
+                selected = currentLayout == KeyboardLayout.OSUNHIVE_UI,
+                onClick = { onLayoutChange(KeyboardLayout.OSUNHIVE_UI) },
+                label = { Text("Osunhive UI", fontSize = 11.sp, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold) },
+                leadingIcon = { Icon(Icons.Default.FormatPaint, contentDescription = null, modifier = Modifier.size(14.dp)) },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = SignalGold,
+                    selectedLabelColor = Color(0xFF1C2B2A)
+                )
+            )
+        }
+
+        when (currentLayout) {
+            KeyboardLayout.QWERTY -> {
+                QwertyLayout(
+                    isShifted = isShifted || isCapsLock,
+                    activeChar = activeCharString,
+                    onKeyClick = {
+                        onKeyPress(it)
+                        if (isShifted && !isCapsLock) isShifted = false
+                    },
+                    onShiftClick = {
+                        if (isShifted) {
+                            if (isCapsLock) {
+                                isCapsLock = false
+                                isShifted = false
+                            } else {
+                                isCapsLock = true
+                            }
+                        } else {
+                            isShifted = true
+                        }
+                    },
+                    isCapsLock = isCapsLock,
+                    onBackspace = onBackspace,
+                    onEnter = onEnter,
+                    onSpace = onSpace,
+                    onSwitchToSym = { onLayoutChange(KeyboardLayout.SYMBOLS) }
+                )
+            }
+            KeyboardLayout.SYMBOLS -> {
+                SymbolsLayout(
+                    activeChar = activeCharString,
+                    onKeyClick = onKeyPress,
+                    onBackspace = onBackspace,
+                    onEnter = onEnter,
+                    onSpace = onSpace,
+                    onSwitchToQwerty = { onLayoutChange(KeyboardLayout.QWERTY) }
+                )
+            }
+            KeyboardLayout.BLOGGER_TAGS -> {
+                BloggerTagsLayout(
+                    onInsertSnippet = onKeyPress,
+                    onBackspace = onBackspace,
+                    onEnter = onEnter,
+                    onSpace = onSpace
+                )
+            }
+            KeyboardLayout.KEYWORDS -> {
+                KeywordsLayout(
+                    onInsertKeyword = onKeyPress,
+                    onBackspace = onBackspace,
+                    onEnter = onEnter,
+                    onSpace = onSpace
+                )
+            }
+            KeyboardLayout.OSUNHIVE_UI -> {
+                OsunhiveUiLayout(
+                    onInsertSnippet = onKeyPress,
+                    onBackspace = onBackspace,
+                    onEnter = onEnter,
+                    onSpace = onSpace
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun QwertyLayout(
+    isShifted: Boolean,
+    activeChar: String?,
+    onKeyClick: (String) -> Unit,
+    onShiftClick: () -> Unit,
+    isCapsLock: Boolean,
+    onBackspace: () -> Unit,
+    onEnter: () -> Unit,
+    onSpace: () -> Unit,
+    onSwitchToSym: () -> Unit
+) {
+    val row1 = listOf("q", "w", "e", "r", "t", "y", "u", "i", "o", "p")
+    val row2 = listOf("a", "s", "d", "f", "g", "h", "j", "k", "l")
+    val row3 = listOf("z", "x", "c", "v", "b", "n", "m")
+
+    // Row 1
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        row1.forEach { char ->
+            val display = if (isShifted) char.uppercase() else char
+            val isActive = activeChar?.equals(char, ignoreCase = true) == true
+            TypewriterKey(
+                label = display,
+                isActive = isActive,
+                modifier = Modifier.weight(1f),
+                onClick = { onKeyClick(display) }
+            )
+        }
+    }
+
+    // Row 2
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Spacer(modifier = Modifier.weight(0.5f))
+        row2.forEach { char ->
+            val display = if (isShifted) char.uppercase() else char
+            val isActive = activeChar?.equals(char, ignoreCase = true) == true
+            TypewriterKey(
+                label = display,
+                isActive = isActive,
+                modifier = Modifier.weight(1f),
+                onClick = { onKeyClick(display) }
+            )
+        }
+        Spacer(modifier = Modifier.weight(0.5f))
+    }
+
+    // Row 3 (Shift, letters, Backspace)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        TypewriterKey(
+            label = if (isCapsLock) "CAPS" else if (isShifted) "▲" else "⇧",
+            isActive = isShifted || isCapsLock,
+            isSpecial = true,
+            modifier = Modifier.weight(1.5f),
+            onClick = onShiftClick
+        )
+
+        row3.forEach { char ->
+            val display = if (isShifted) char.uppercase() else char
+            val isActive = activeChar?.equals(char, ignoreCase = true) == true
+            TypewriterKey(
+                label = display,
+                isActive = isActive,
+                modifier = Modifier.weight(1f),
+                onClick = { onKeyClick(display) }
+            )
+        }
+
+        TypewriterKey(
+            label = "⌫",
+            isSpecial = true,
+            modifier = Modifier.weight(1.5f),
+            onClick = onBackspace
+        )
+    }
+
+    // Row 4 (123, comma, Space, dot, Enter)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        TypewriterKey(
+            label = "?123",
+            isSpecial = true,
+            modifier = Modifier.weight(1.6f),
+            onClick = onSwitchToSym
+        )
+        TypewriterKey(
+            label = ",",
+            modifier = Modifier.weight(0.9f),
+            isActive = activeChar == ",",
+            onClick = { onKeyClick(",") }
+        )
+        TypewriterKey(
+            label = "SPACE",
+            isSpecial = true,
+            modifier = Modifier.weight(3.8f),
+            isActive = activeChar == " ",
+            onClick = onSpace
+        )
+        TypewriterKey(
+            label = ".",
+            modifier = Modifier.weight(0.9f),
+            isActive = activeChar == ".",
+            onClick = { onKeyClick(".") }
+        )
+        TypewriterKey(
+            label = "⏎",
+            isSpecial = true,
+            modifier = Modifier.weight(1.6f),
+            isActive = activeChar == "\n",
+            onClick = onEnter
+        )
+    }
+}
+
+@Composable
+private fun SymbolsLayout(
+    activeChar: String?,
+    onKeyClick: (String) -> Unit,
+    onBackspace: () -> Unit,
+    onEnter: () -> Unit,
+    onSpace: () -> Unit,
+    onSwitchToQwerty: () -> Unit
+) {
+    val row1 = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+    val row2 = listOf("@", "#", "$", "%", "&", "-", "+", "(", ")", "/")
+    val row3 = listOf("<", ">", "\"", "'", ":", ";", "!", "?")
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        row1.forEach { sym ->
+            TypewriterKey(
+                label = sym,
+                modifier = Modifier.weight(1f),
+                isActive = activeChar == sym,
+                onClick = { onKeyClick(sym) }
+            )
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth()) {
+        row2.forEach { sym ->
+            TypewriterKey(
+                label = sym,
+                modifier = Modifier.weight(1f),
+                isActive = activeChar == sym,
+                onClick = { onKeyClick(sym) }
+            )
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth()) {
+        TypewriterKey(
+            label = "ABC",
+            isSpecial = true,
+            modifier = Modifier.weight(1.5f),
+            onClick = onSwitchToQwerty
+        )
+        row3.forEach { sym ->
+            TypewriterKey(
+                label = sym,
+                modifier = Modifier.weight(1f),
+                isActive = activeChar == sym,
+                onClick = { onKeyClick(sym) }
+            )
+        }
+        TypewriterKey(
+            label = "⌫",
+            isSpecial = true,
+            modifier = Modifier.weight(1.5f),
+            onClick = onBackspace
+        )
+    }
+    Row(modifier = Modifier.fillMaxWidth()) {
+        TypewriterKey(
+            label = "=",
+            modifier = Modifier.weight(1.2f),
+            isActive = activeChar == "=",
+            onClick = { onKeyClick("=") }
+        )
+        TypewriterKey(
+            label = "/",
+            modifier = Modifier.weight(1.2f),
+            isActive = activeChar == "/",
+            onClick = { onKeyClick("/") }
+        )
+        TypewriterKey(
+            label = "SPACE",
+            isSpecial = true,
+            modifier = Modifier.weight(3.5f),
+            isActive = activeChar == " ",
+            onClick = onSpace
+        )
+        TypewriterKey(
+            label = "_",
+            modifier = Modifier.weight(1.2f),
+            isActive = activeChar == "_",
+            onClick = { onKeyClick("_") }
+        )
+        TypewriterKey(
+            label = "⏎",
+            isSpecial = true,
+            modifier = Modifier.weight(1.5f),
+            isActive = activeChar == "\n",
+            onClick = onEnter
+        )
+    }
+}
+
+@Composable
+private fun BloggerTagsLayout(
+    onInsertSnippet: (String) -> Unit,
+    onBackspace: () -> Unit,
+    onEnter: () -> Unit,
+    onSpace: () -> Unit
+) {
+    val tagsRow1 = listOf(
+        "<p>" to "<p></p>",
+        "<h2>" to "<h2></h2>",
+        "<h3>" to "<h3></h3>",
+        "<b>" to "<b></b>",
+        "<i>" to "<i></i>",
+        "<a>" to "<a href=\"https://\" target=\"_blank\"></a>"
+    )
+    val tagsRow2 = listOf(
+        "<blockquote>" to "<blockquote class=\"tr_bq\"></blockquote>",
+        "<img>" to "<div class=\"separator\"><img src=\"\" alt=\"\" /></div>",
+        "<code>" to "<code></code>",
+        "<mark>" to "<mark></mark>",
+        "<hr>" to "<hr />",
+        "<ul>" to "<ul>\n  <li></li>\n</ul>"
+    )
+    val tagsRow3 = listOf(
+        "Labels:" to "<!-- Blogger Labels: Technology, Android -->\n",
+        "<!-- -->" to "<!--  -->",
+        "Title:" to "<!-- Post Title:  -->\n",
+        "CTA Box" to "<div style=\"background:#e8f0fe;padding:12px;border-radius:6px;\"></div>"
+    )
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        tagsRow1.forEach { (label, code) ->
+            TypewriterKey(
+                label = label,
+                modifier = Modifier.weight(1f),
+                onClick = { onInsertSnippet(code) }
+            )
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth()) {
+        tagsRow2.forEach { (label, code) ->
+            TypewriterKey(
+                label = label,
+                modifier = Modifier.weight(1f),
+                onClick = { onInsertSnippet(code) }
+            )
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth()) {
+        tagsRow3.forEach { (label, code) ->
+            TypewriterKey(
+                label = label,
+                modifier = Modifier.weight(1f),
+                onClick = { onInsertSnippet(code) }
+            )
+        }
+        TypewriterKey(
+            label = "⌫",
+            isSpecial = true,
+            modifier = Modifier.weight(0.8f),
+            onClick = onBackspace
+        )
+        TypewriterKey(
+            label = "⏎",
+            isSpecial = true,
+            modifier = Modifier.weight(0.8f),
+            onClick = onEnter
+        )
+    }
+}
+
+@Composable
+private fun KeywordsLayout(
+    onInsertKeyword: (String) -> Unit,
+    onBackspace: () -> Unit,
+    onEnter: () -> Unit,
+    onSpace: () -> Unit
+) {
+    val keywordsRow1 = listOf(
+        "auto typing keywords" to "auto typing keywords",
+        "blogger html" to "blogger html injection",
+        "content automation" to "content automation"
+    )
+    val keywordsRow2 = listOf(
+        "seo tags" to "android, blogging, seo, keywords, automated typing",
+        "post labels" to "Technology, Productivity, Tools",
+        "alt text" to "alt=\"keyword-optimized-image\""
+    )
+    val keywordsRow3 = listOf(
+        "target keywords" to "target keywords: auto typing, blogger post, content injection",
+        "blogger.com" to "Blogger.com",
+        "publish tips" to "Publishing with optimized keyword density"
+    )
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        keywordsRow1.forEach { (label, text) ->
+            TypewriterKey(
+                label = label,
+                modifier = Modifier.weight(1f),
+                onClick = { onInsertKeyword("$text ") }
+            )
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth()) {
+        keywordsRow2.forEach { (label, text) ->
+            TypewriterKey(
+                label = label,
+                modifier = Modifier.weight(1f),
+                onClick = { onInsertKeyword("$text ") }
+            )
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth()) {
+        keywordsRow3.forEach { (label, text) ->
+            TypewriterKey(
+                label = label,
+                modifier = Modifier.weight(1f),
+                onClick = { onInsertKeyword("$text ") }
+            )
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth()) {
+        TypewriterKey(
+            label = "SPACE",
+            isSpecial = true,
+            modifier = Modifier.weight(2f),
+            onClick = onSpace
+        )
+        TypewriterKey(
+            label = "⌫",
+            isSpecial = true,
+            modifier = Modifier.weight(1f),
+            onClick = onBackspace
+        )
+        TypewriterKey(
+            label = "⏎",
+            isSpecial = true,
+            modifier = Modifier.weight(1f),
+            onClick = onEnter
+        )
+    }
+}
+
+@Composable
+private fun OsunhiveUiLayout(
+    onInsertSnippet: (String) -> Unit,
+    onBackspace: () -> Unit,
+    onEnter: () -> Unit,
+    onSpace: () -> Unit
+) {
+    val row1 = listOf(
+        "DropCap" to "<span class=\"oh-dropcap\">A</span>",
+        "Lead" to "<p class=\"oh-lead\"></p>",
+        "H2 Accent" to "<h2 class=\"oh-h2\"></h2>",
+        "H3" to "<h3 class=\"oh-h3\"></h3>",
+        "Mark" to "<mark class=\"oh-mark\"></mark>",
+        "Badges" to "<span class=\"oh-badge oh-badge-gold\">Featured</span>"
+    )
+
+    val row2 = listOf(
+        "Alert Info" to "<div class=\"oh-alert oh-alert-info\"><div class=\"oh-alert-icon\">ℹ️</div><div class=\"oh-alert-body\"><strong>Note:</strong> </div></div>",
+        "Alert Tip" to "<div class=\"oh-alert oh-alert-success\"><div class=\"oh-alert-icon\">✅</div><div class=\"oh-alert-body\"><strong>Tip:</strong> </div></div>",
+        "Alert Warn" to "<div class=\"oh-alert oh-alert-warning\"><div class=\"oh-alert-icon\">⚠️</div><div class=\"oh-alert-body\"><strong>Caution:</strong> </div></div>",
+        "Alert Danger" to "<div class=\"oh-alert oh-alert-danger\"><div class=\"oh-alert-icon\">⛔</div><div class=\"oh-alert-body\"><strong>Important:</strong> </div></div>",
+        "Quote" to "<blockquote class=\"oh-blockquote\"><p></p><cite class=\"oh-cite\"></cite></blockquote>"
+    )
+
+    val row3 = listOf(
+        "Primary Btn" to "<a href=\"#\" class=\"oh-btn oh-btn-primary\">Read More</a>",
+        "Download" to "<a href=\"#download\" class=\"oh-btn oh-btn-download\">⬇️ Download</a>",
+        "Demo" to "<a href=\"#demo\" class=\"oh-btn oh-btn-demo\">🚀 Live Demo</a>",
+        "Outline" to "<a href=\"#\" class=\"oh-btn oh-btn-outline\">Learn More</a>",
+        "Code Box" to "<div class=\"oh-code-box\"><div class=\"oh-code-header\"><span>HTML</span></div><pre class=\"oh-pre\"><code></code></pre></div>"
+    )
+
+    val row4 = listOf(
+        "FAQ" to "<details class=\"oh-accordion\"><summary class=\"oh-summary\">Question Title?</summary><div class=\"oh-content\"><p></p></div></details>",
+        "Table" to "<div class=\"oh-table-wrapper\"><table class=\"oh-table\"><thead><tr><th>Feature</th><th>Osunhive UI</th></tr></thead><tbody><tr><td>Item 1</td><td>Active</td></tr></tbody></table></div>",
+        "Checklist" to "<ul class=\"oh-list-check\"><li>First key point</li><li>Second key point</li></ul>"
+    )
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        row1.forEach { (label, code) ->
+            TypewriterKey(
+                label = label,
+                modifier = Modifier.weight(1f),
+                onClick = { onInsertSnippet(code) }
+            )
+        }
+    }
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        row2.forEach { (label, code) ->
+            TypewriterKey(
+                label = label,
+                modifier = Modifier.weight(1f),
+                onClick = { onInsertSnippet(code) }
+            )
+        }
+    }
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        row3.forEach { (label, code) ->
+            TypewriterKey(
+                label = label,
+                modifier = Modifier.weight(1f),
+                onClick = { onInsertSnippet(code) }
+            )
+        }
+    }
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        row4.forEach { (label, code) ->
+            TypewriterKey(
+                label = label,
+                modifier = Modifier.weight(1.2f),
+                onClick = { onInsertSnippet(code) }
+            )
+        }
+        TypewriterKey(
+            label = "SPACE",
+            isSpecial = true,
+            modifier = Modifier.weight(1.4f),
+            onClick = onSpace
+        )
+        TypewriterKey(
+            label = "⌫",
+            isSpecial = true,
+            modifier = Modifier.weight(1f),
+            onClick = onBackspace
+        )
+        TypewriterKey(
+            label = "⏎",
+            isSpecial = true,
+            modifier = Modifier.weight(1f),
+            onClick = onEnter
+        )
+    }
+}

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Blogger Auto Typer</string>
+    <string name="subtype_en_us">English (US) - Blogger Typewriter</string>
+    <string name="ime_name">Blogger Auto Typer Keyboard</string>
+</resources>

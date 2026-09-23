@@ -1,0 +1,6 @@
+{
+  "name": "Blogger Auto Typer",
+  "description": "Blogger Auto Typer and Post Workbench with tactile typewriter engine, comfortable light/dark long-form writing themes, developer page, and integrated AdSense & Blogger browser.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
