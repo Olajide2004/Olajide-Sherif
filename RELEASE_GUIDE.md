@@ -4,7 +4,28 @@ This guide explains how to generate, release, and download your **Blogger Auto T
 
 ---
 
-## 🚀 Option 1: Automatic Release via GitHub Tags / Releases (Recommended)
+## 💻 Option 1: GitHub CLI (`gh release create`)
+
+The GitHub CLI (`gh`) is installed and ready in this environment. The compiled APK is staged at `release/BloggerAutoTyper-v1.0.0.apk`.
+
+### Quick 1-Command Release
+Run the command below (replace `YOUR_GITHUB_TOKEN` with your GitHub Personal Access Token or authenticate via `gh auth login`):
+
+```bash
+GH_TOKEN="YOUR_GITHUB_TOKEN" gh release create v1.0.0 release/BloggerAutoTyper-v1.0.0.apk \
+  --repo Olajide2004/Olajide-Sherif \
+  --title "Release v1.0.0 - Blogger Auto Typer" \
+  --notes "Blogger Auto Typer Android APK Release. Built with custom typewriter engine, comfortable writing palettes, and integrated tools."
+```
+
+### Or Run the Included Script:
+```bash
+GH_TOKEN="YOUR_GITHUB_TOKEN" ./create_github_release.sh
+```
+
+---
+
+## 🚀 Option 2: Automatic Release via GitHub Actions (Recommended for web)
 
 The automated GitHub Action workflow (`.github/workflows/release.yml`) builds and publishes the APK whenever you create a release.
 
